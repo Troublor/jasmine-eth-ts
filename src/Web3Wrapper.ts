@@ -2,56 +2,58 @@ import Web3 from "web3";
 import Web3Core from "web3-core"
 import {Address} from "./types";
 import {TransactionObject} from "./contracts/types";
-import PromiEvent from "web3/promiEvent";
+import {ContractSendMethod} from "web3-eth-contract";
 import BN from "bn.js";
+
 
 export default abstract class Web3Wrapper {
     protected _web3: Web3;
 
-    protected _defaultAccount: Web3Core.Account;
+    protected _defaultWeb3Account: Web3Core.Account;
 
-    protected constructor(web3: Web3, privateKeyOrAccount?: string | Web3Core.Account) {
+    protected constructor(web3: Web3, privateKeyOrWeb3Account?: string | Web3Core.Account) {
         this._web3 = web3;
-        if (typeof privateKeyOrAccount === "string") {
-            this._defaultAccount = web3.eth.accounts.privateKeyToAccount(privateKeyOrAccount);
-        } else if (typeof privateKeyOrAccount == "object") {
-            this._defaultAccount = privateKeyOrAccount;
+        if (typeof privateKeyOrWeb3Account === "string") {
+            this._defaultWeb3Account = web3.eth.accounts.privateKeyToAccount(privateKeyOrWeb3Account);
+        } else if (typeof privateKeyOrWeb3Account == "object") {
+            this._defaultWeb3Account = privateKeyOrWeb3Account;
         } else {
-            this._defaultAccount = undefined;
+            this._defaultWeb3Account = undefined;
         }
     }
 
     protected setDefaultAccount(privateKey: string) {
-        this._defaultAccount = this._web3.eth.accounts.privateKeyToAccount(privateKey);
+        this._defaultWeb3Account = this._web3.eth.accounts.privateKeyToAccount(privateKey);
     }
 
     get defaultAccountAddress(): Address {
-        return this._defaultAccount.address;
+        return this._defaultWeb3Account?.address;
     }
 
-    get defaultAccount(): Web3Core.Account {
-        return this._defaultAccount;
+    get defaultWeb3Account(): Web3Core.Account {
+        return this._defaultWeb3Account;
     }
 
     get web3(): Web3 {
         return this._web3;
     }
 
-    // @ts-ignore
-    protected async sendTransaction(transaction: TransactionObject<any>, to: Address, from?: Web3Core.Account, value?: number | string | BN): PromiEvent<Web3Core.TransactionReceipt> {
-        if (!from) {
-            from = this._defaultAccount;
+    protected async signTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.SignedTransaction> {
+        if (!options.from) {
+            options.from = this._defaultWeb3Account;
         }
-        let nonce = await this._web3.eth.getTransactionCount(from.address);
-        let gasLimit = await transaction.estimateGas({from: from.address});
+        let nonce = await this._web3.eth.getTransactionCount(options.from.address);
+        let gasLimit = options.gas ? options.gas : await this._web3.eth.estimateGas({from: options.from.address});
         let gasPrice = await this._web3.eth.getGasPrice();
         let rawTx: Web3Core.TransactionConfig = {
-            from: from.address,
+            from: options.from.address,
             to: to,
-            value: value,
+            nonce: nonce,
+            value: options.value,
             data: transaction.encodeABI(),
+            gas: gasLimit,
+            gasPrice: gasPrice,
         };
-        let signedTx = await this._defaultAccount.signTransaction(rawTx);
-        return this._web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+        return await options.from.signTransaction(rawTx);
     }
-};
+}

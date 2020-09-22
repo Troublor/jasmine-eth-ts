@@ -67,48 +67,48 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    public async transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            let tx = this._contract.methods.transfer(to, amount.toString());
-            this.sendTransaction(tx, this._address, sender.defaultAccount)
-                .on("confirmation", (confNumber) => {
-                    if (confNumber >= ConfirmationRequirement) {
-                        resolve();
-                    }
-                })
-                .on("error", error => {
-                    reject(error);
-                });
-        });
-    }
-
-    public async transferFrom(from: Address, to: Address, amount: BN, sender?: Account): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            let tx = this._contract.methods.transferFrom(from, to, amount.toString());
-            this.sendTransaction(tx, this._address, sender.defaultAccount)
-                .on("confirmation", (confNumber) => {
-                    if (confNumber >= ConfirmationRequirement) {
-                        resolve();
-                    }
-                })
-                .on("error", error => {
-                    reject(error);
-                });
-        });
-    }
-
-    public async approve(spender: Address, amount: BN, sender?: Account): Promise<void> {
-        return new Promise<void>(async (resolve, reject) => {
-            let tx = this._contract.methods.approve(spender, amount.toString());
-            this.sendTransaction(tx, this._address, sender.defaultAccount)
-                .on("confirmation", (confNumber) => {
-                    if (confNumber >= ConfirmationRequirement) {
-                        resolve();
-                    }
-                })
-                .on("error", error => {
-                    reject(error);
-                });
-        });
-    }
+    // public async transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
+    //     return new Promise<void>(async (resolve, reject) => {
+    //         let tx = this._contract.methods.transfer(to, amount.toString());
+    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
+    //             promiEvent
+    //                 .on("confirmation", (confNumber) => {
+    //                     if (confNumber >= ConfirmationRequirement) {
+    //                         resolve();
+    //                     }
+    //                 })
+    //                 .on("error", reject);
+    //         });
+    //     });
+    // }
+    //
+    // public async transferFrom(from: Address, to: Address, amount: BN, sender?: Account): Promise<void> {
+    //     return new Promise<void>(async (resolve, reject) => {
+    //         let tx = this._contract.methods.transferFrom(from, to, amount.toString());
+    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
+    //             promiEvent
+    //                 .on("confirmation", (confNumber) => {
+    //                     if (confNumber >= ConfirmationRequirement) {
+    //                         resolve();
+    //                     }
+    //                 })
+    //                 .on("error", reject);
+    //         });
+    //     });
+    // }
+    //
+    // public async approve(spender: Address, amount: BN, sender?: Account): Promise<void> {
+    //     return new Promise<void>(async (resolve, reject) => {
+    //         let tx = this._contract.methods.approve(spender, amount.toString());
+    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
+    //             promiEvent
+    //                 .on("confirmation", (confNumber) => {
+    //                     if (confNumber >= ConfirmationRequirement) {
+    //                         resolve();
+    //                     }
+    //                 })
+    //                 .on("error", reject);
+    //         });
+    //     });
+    // }
 }

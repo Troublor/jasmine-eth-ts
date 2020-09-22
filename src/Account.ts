@@ -9,11 +9,11 @@ export default class Account extends Web3Wrapper {
     }
 
     get address(): Address {
-        return this.defaultAccount.address
+        return this.defaultWeb3Account.address
     }
 
     get privateKey(): string {
-        return this.defaultAccount.privateKey;
+        return this.defaultWeb3Account.privateKey;
     }
 
     public getTFC(tfcAddress: Address): TFC {
