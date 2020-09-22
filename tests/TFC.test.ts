@@ -127,4 +127,19 @@ describe("TFC", () => {
                 done();
             })
     });
+
+    it('should be able to list admin addresses', async function () {
+        let admins = await tfc.adminAddresses();
+        expect(admins).to.be.lengthOf(1);
+        expect(admins[0]).to.be.equal(admin.address);
+    });
+
+    it('should be able to check if it can mint', async function () {
+        expect(
+            await tfc.canMint()
+        ).to.be.true;
+        expect(
+            await tfc.canMint(account1)
+        ).to.be.false;
+    });
 });

@@ -52,8 +52,7 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    public async allowance(owner: Address, spender: Address):
-        Promise<BN> {
+    public async allowance(owner: Address, spender: Address): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
             this._contract.methods.allowance(owner, spender).call()
                 .then(r => {
@@ -63,8 +62,7 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    public async balanceOf(owner: Address):
-        Promise<BN> {
+    public async balanceOf(owner: Address): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
             this._contract.methods.balanceOf(owner).call()
                 .then(r => {
@@ -72,6 +70,22 @@ export default class TFC extends Web3Wrapper {
                 })
                 .catch(reject);
         });
+    }
+
+    public async adminAddresses(): Promise<Address[]> {
+        let adminRole = await this._contract.methods.DEFAULT_ADMIN_ROLE().call();
+        let adminCount = parseInt(await this._contract.methods.getRoleMemberCount(adminRole).call());
+        let admins: Address[] = [];
+        for (let i = 0; i < adminCount; i++) {
+            admins.push(await this._contract.methods.getRoleMember(adminRole, i).call());
+        }
+        return admins;
+    }
+
+    public async canMint(sender?: Account): Promise<boolean> {
+        let address = sender ? sender.address : this.defaultAccountAddress;
+        let minterRole = await this._contract.methods.MINTER_ROLE().call();
+        return await this._contract.methods.hasRole(minterRole, address).call();
     }
 
     public async transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
