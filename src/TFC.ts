@@ -106,4 +106,15 @@ export default class TFC extends Web3Wrapper {
                 .catch(reject);
         });
     }
+
+    public async mint(to: Address, amount: BN, sender?: Account): Promise<void> {
+        let tx = this._contract.methods.mint(to, amount.toString());
+        return new Promise<void>((resolve, reject) => {
+            this.sendTransaction(tx, this._address, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            })
+                .then(() => resolve())
+                .catch(reject);
+        });
+    }
 }

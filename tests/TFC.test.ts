@@ -110,7 +110,20 @@ describe("TFC", () => {
 
     it('should not be able to transferFrom without allowance', function (done) {
         tfc.transferFrom(admin.address, account1.address, new BN(50), account1)
-            .catch(()=>{
+            .catch(() => {
+                done();
+            })
+    });
+
+    it('should be able to mint', async function () {
+        await tfc.mint(account1.address, new BN(100));
+        let balance = await tfc.balanceOf(account1.address);
+        expect(balance.toNumber()).to.be.equal(new BN(100).toNumber());
+    });
+
+    it('should not be able to mint without minter role', function (done) {
+        tfc.mint(account1.address, new BN(100), account1)
+            .catch(() => {
                 done();
             })
     });
