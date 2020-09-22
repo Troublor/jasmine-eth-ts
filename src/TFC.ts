@@ -7,7 +7,6 @@ import fs from "fs";
 import path from "path";
 import BN from "bn.js";
 import Account from "./Account";
-import {ConfirmationRequirement} from "./env";
 
 export default class TFC extends Web3Wrapper {
     private readonly _address: Address;
@@ -33,8 +32,14 @@ export default class TFC extends Web3Wrapper {
         return this._contract.methods.symbol().call();
     }
 
-    public async decimals(): Promise<string> {
-        return this._contract.methods.decimals().call();
+    public async decimals(): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            this._contract.methods.decimals().call()
+                .then(r => {
+                    resolve(parseInt(r));
+                })
+                .catch(reject);
+        });
     }
 
     public async totalSupply(): Promise<BN> {
@@ -47,7 +52,8 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    public async allowance(owner: Address, spender: Address): Promise<BN> {
+    public async allowance(owner: Address, spender: Address):
+        Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
             this._contract.methods.allowance(owner, spender).call()
                 .then(r => {
@@ -57,7 +63,8 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    public async balanceOf(owner: Address): Promise<BN> {
+    public async balanceOf(owner: Address):
+        Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
             this._contract.methods.balanceOf(owner).call()
                 .then(r => {
@@ -67,48 +74,36 @@ export default class TFC extends Web3Wrapper {
         });
     }
 
-    // public async transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
-    //     return new Promise<void>(async (resolve, reject) => {
-    //         let tx = this._contract.methods.transfer(to, amount.toString());
-    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
-    //             promiEvent
-    //                 .on("confirmation", (confNumber) => {
-    //                     if (confNumber >= ConfirmationRequirement) {
-    //                         resolve();
-    //                     }
-    //                 })
-    //                 .on("error", reject);
-    //         });
-    //     });
-    // }
-    //
-    // public async transferFrom(from: Address, to: Address, amount: BN, sender?: Account): Promise<void> {
-    //     return new Promise<void>(async (resolve, reject) => {
-    //         let tx = this._contract.methods.transferFrom(from, to, amount.toString());
-    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
-    //             promiEvent
-    //                 .on("confirmation", (confNumber) => {
-    //                     if (confNumber >= ConfirmationRequirement) {
-    //                         resolve();
-    //                     }
-    //                 })
-    //                 .on("error", reject);
-    //         });
-    //     });
-    // }
-    //
-    // public async approve(spender: Address, amount: BN, sender?: Account): Promise<void> {
-    //     return new Promise<void>(async (resolve, reject) => {
-    //         let tx = this._contract.methods.approve(spender, amount.toString());
-    //         this.sendTransaction(tx, this._address, sender.defaultWeb3Account).then(promiEvent => {
-    //             promiEvent
-    //                 .on("confirmation", (confNumber) => {
-    //                     if (confNumber >= ConfirmationRequirement) {
-    //                         resolve();
-    //                     }
-    //                 })
-    //                 .on("error", reject);
-    //         });
-    //     });
-    // }
+    public async transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
+        let tx = this._contract.methods.transfer(to, amount.toString());
+        return new Promise<void>((resolve, reject) => {
+            this.sendTransaction(tx, this._address, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            })
+                .then(() => resolve())
+                .catch(reject);
+        });
+    }
+
+    public async transferFrom(from: Address, to: Address, amount: BN, sender?: Account): Promise<void> {
+        let tx = this._contract.methods.transferFrom(from, to, amount.toString());
+        return new Promise<void>((resolve, reject) => {
+            this.sendTransaction(tx, this._address, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            })
+                .then(() => resolve())
+                .catch(reject);
+        });
+    }
+
+    public async approve(spender: Address, amount: BN, sender?: Account): Promise<void> {
+        let tx = this._contract.methods.approve(spender, amount.toString());
+        return new Promise<void>((resolve, reject) => {
+            this.sendTransaction(tx, this._address, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            })
+                .then(() => resolve())
+                .catch(reject);
+        });
+    }
 }

@@ -11,6 +11,8 @@ export default abstract class Web3Wrapper {
 
     protected _defaultWeb3Account: Web3Core.Account;
 
+    protected _confirmationRequirement: number;
+
     protected constructor(web3: Web3, privateKeyOrWeb3Account?: string | Web3Core.Account) {
         this._web3 = web3;
         if (typeof privateKeyOrWeb3Account === "string") {
@@ -38,12 +40,20 @@ export default abstract class Web3Wrapper {
         return this._web3;
     }
 
+    get confirmationRequirement(): number {
+        return this._confirmationRequirement;
+    }
+
+    set confirmationRequirement(value: number) {
+        this._confirmationRequirement = value;
+    }
+
     protected async signTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.SignedTransaction> {
         if (!options.from) {
             options.from = this._defaultWeb3Account;
         }
         let nonce = await this._web3.eth.getTransactionCount(options.from.address);
-        let gasLimit = options.gas ? options.gas : await this._web3.eth.estimateGas({from: options.from.address});
+        let gasLimit = options.gas ? options.gas : await transaction.estimateGas({from: options.from.address});
         let gasPrice = await this._web3.eth.getGasPrice();
         let rawTx: Web3Core.TransactionConfig = {
             from: options.from.address,
@@ -55,5 +65,27 @@ export default abstract class Web3Wrapper {
             gasPrice: gasPrice,
         };
         return await options.from.signTransaction(rawTx);
+    }
+
+    protected async sendTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.TransactionReceipt> {
+        return new Promise<Web3Core.TransactionReceipt>(async (resolve, reject) => {
+            try {
+                let signedTx = await this.signTransaction(transaction, to, options);
+                this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+                    .on("receipt", receipt => {
+                        if (!this._confirmationRequirement) {
+                            resolve(receipt);
+                        }
+                    })
+                    .on("confirmation", (confNumber, receipt) => {
+                        if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+                            resolve(receipt);
+                        }
+                    })
+                    .on("error", reject);
+            } catch (e) {
+                reject(e);
+            }
+        });
     }
 }

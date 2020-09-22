@@ -6,7 +6,6 @@ import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
 import fs from "fs";
 import path from "path";
-import {ConfirmationRequirement} from "./env";
 import Web3Core from "web3-core";
 
 export default class SDK extends Web3Wrapper {
@@ -40,19 +39,13 @@ export default class SDK extends Web3Wrapper {
                 data: data.toString().trim(),
                 arguments: [initialSupply],
             })
-            let signedTx = await this.signTransaction(tx, undefined, {from: sender.defaultWeb3Account, gas: 6000000});
-            this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-                .on("receipt", receipt => {
-                    if (!ConfirmationRequirement) {
-                        resolve(receipt.contractAddress);
-                    }
+            this.sendTransaction(tx, undefined, {
+                from: sender.defaultWeb3Account, gas: 6000000
+            })
+                .then(receipt => {
+                    resolve(receipt.contractAddress)
                 })
-                .on("confirmation", (confNumber, receipt) => {
-                    if (ConfirmationRequirement && confNumber >= ConfirmationRequirement) {
-                        resolve(receipt.contractAddress);
-                    }
-                })
-                .on("error", reject);
+                .catch(reject);
         });
     }
 
@@ -66,7 +59,11 @@ export default class SDK extends Web3Wrapper {
                 privateKey = privateKeyOrDefaultAccount.privateKey;
                 break;
             default:
-                privateKey = undefined;
+                if (this.defaultWeb3Account) {
+                    privateKey = this.defaultWeb3Account.privateKey;
+                } else {
+                    privateKey = undefined;
+                }
 
         }
         return new TFC(this.web3, tfcAddress, privateKey);

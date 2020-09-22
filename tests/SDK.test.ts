@@ -61,12 +61,4 @@ describe("SDK", () => {
         let balance = await tfc.contract.methods.balanceOf(account.address).call();
         expect(balance).to.be.equal(initialSupply.toString());
     });
-
-    it('should ', async function () {
-        let accounts = await sdk.web3.eth.getAccounts();
-        console.log(await sdk.web3.eth.getBalance(accounts[0]));
-        await sdk.web3.eth.sendTransaction({from: accounts[0], to: accounts[1], value: 10000000000000000000});
-        console.log(await sdk.web3.eth.getBalance(accounts[0]));
-        console.log(await sdk.web3.eth.getBalance(accounts[1]));
-    });
 })
