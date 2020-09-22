@@ -7,7 +7,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.test.ts",
-    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests ."
+    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library ./src/index.ts"
   },
   "dependencies": {
     "bn.js": "^5.1.3",
@@ -25,6 +25,6 @@
     "mocha": "^8.1.3",
     "nyc": "^15.1.0",
     "typechain": "^2.0.0",
-    "typedoc": "^0.19.2"
+    "typedoc": "^0.17.0-3"
   }
 }
