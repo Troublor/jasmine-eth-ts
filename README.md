@@ -4,7 +4,7 @@
 ## SDK 
 
 SDK wraps the interactions with `TFC` ERC20 Token contract on Ethereum. 
-A detailed documentation can be found in [`docs`](https://github.io/Troublor/jasmine-eth-ts)
+A detailed documentation can be found in [`docs`](https://troublor.github.io/jasmine-eth-ts/)
 
 ## Usage
 
@@ -46,4 +46,4 @@ let balance = await tfc.balanceOf(account.address); // get token balance
 await tfc.transfer(anotherAccount.address, new BN(10)); // transfer 10 tokens from default account to anotherAccount 
 ```
 
-More APIs can be found in the [documentation](https://github.io/Troublor/jasmine-eth-ts).
+More APIs can be found in the [documentation](https://troublor.github.io/jasmine-eth-ts/).
