@@ -2,9 +2,14 @@
   {
     "inputs": [
       {
-        "internalType": "uint256",
-        "name": "initialSupply",
-        "type": "uint256"
+        "internalType": "address[]",
+        "name": "initialHolders",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "initialSupplies",
+        "type": "uint256[]"
       }
     ],
     "stateMutability": "nonpayable",
@@ -492,6 +497,30 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address[]",
+        "name": "tos",
+        "type": "address[]"
+      },
+      {
+        "internalType": "uint256[]",
+        "name": "amounts",
+        "type": "uint256[]"
+      }
+    ],
+    "name": "one2manyTransfer",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

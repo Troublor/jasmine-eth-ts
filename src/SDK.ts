@@ -46,17 +46,23 @@ export default class SDK extends Web3Wrapper {
     /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *
-     * @param initialSupply the initial token supply
-     * @param sender the account used to the contract (who will become admin)
+     * @param initialHolders the list of initial accounts that will get initial supply (100 million token each) (the number must be 20)
+     * @param sender the transaction sender who creates the contract
      */
-    public deployTFC(initialSupply: BN, sender?: Account): Promise<Address> {
+    public deployTFC(initialHolders: Account[], sender?: Account): Promise<Address> {
+        if (initialHolders.length !== 20) {
+            throw new Error("number of initial holders must be exactly 20")
+        }
         return new Promise<Address>(async (resolve, reject) => {
             let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
             let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.bin"));
             let contract = new this.web3.eth.Contract(abi);
             let tx = contract.deploy({
                 data: data.toString().trim(),
-                arguments: [initialSupply],
+                arguments: [
+                    initialHolders.map(account => account.address),
+                    Array(20).fill(new BN('100000000', 10).mul(new BN('1000000000000000000', 10))) // each get 100 million tokens (decimals 18)
+                ],
             })
             this.sendTransaction(tx, undefined, {
                 from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,

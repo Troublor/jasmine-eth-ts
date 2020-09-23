@@ -75,6 +75,11 @@ export class TFCToken extends Contract {
 
     name(): TransactionObject<string>;
 
+    one2manyTransfer(
+      tos: string[],
+      amounts: (number | string)[]
+    ): TransactionObject<boolean>;
+
     pause(): TransactionObject<void>;
 
     paused(): TransactionObject<boolean>;

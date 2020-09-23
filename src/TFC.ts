@@ -200,12 +200,36 @@ export default class TFC extends Web3Wrapper {
      * Mint a certain amount of tokens from nowhere and put the tokens in one account.
      * The transaction sender must be the one of administrators listed by {@link TFC.adminAddresses}.
      *
+     * @deprecated
      * @param to Ethereum address of the account to received the minted tokens
      * @param amount the amount of tokens to mint
      * @param sender (optional) transaction sender. If omitted, use the default account.
      */
     public async mint(to: Address, amount: BN, sender?: Account): Promise<void> {
         let tx = this._contract.methods.mint(to, amount.toString());
+        return new Promise<void>((resolve, reject) => {
+            this.sendTransaction(tx, this._address, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            })
+                .then(() => resolve())
+                .catch(reject);
+        });
+    }
+
+    /**
+     * Perform a one-to-many token transfer, tokens are transferred from the sender's account to the recipients.
+     *
+     * @param bundledTransfer the bundled transfer recipient and amount
+     * @param sender the sender who sends the transaction and whose tokens are transferred
+     */
+    public async one2manyTransfer(bundledTransfer: { recipient: Address, amount: BN }[], sender?: Account): Promise<void> {
+        let recipients = [];
+        let amounts = [];
+        for (let t of bundledTransfer) {
+            recipients.push(t.recipient);
+            amounts.push(t.amount);
+        }
+        let tx = this._contract.methods.one2manyTransfer(recipients, amounts.map(a => a.toString()));
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,

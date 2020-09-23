@@ -26,8 +26,6 @@ describe("SDK", () => {
 
     it('should be able to create account', function () {
         let account = sdk.createAccount();
-        console.log(account.address);
-        console.log(account.privateKey);
         expect(sdk.web3.eth.accounts.privateKeyToAccount(account.privateKey).address).to.be.equal(account.address);
     });
 
@@ -47,18 +45,16 @@ describe("SDK", () => {
     });
 
     it('should be able to deploy TFC', async function () {
-        let account = sdk.retrieveAccount(accounts[0].secretKey);
-        let tfcAddress = await sdk.deployTFC(new BN(100), account);
+        let holders = accounts.map(acc => sdk.retrieveAccount(acc.secretKey)).slice(0, 20);
+        let tfcAddress = await sdk.deployTFC(holders, holders[0]);
         let code = await sdk.web3.eth.getCode(tfcAddress);
         expect(code).to.not.be.undefined;
-    });
-
-    it('should be able to create TFC instance', async function () {
-        let account = sdk.retrieveAccount(accounts[0].secretKey);
-        let initialSupply = new BN(100);
-        let tfcAddress = await sdk.deployTFC(initialSupply, account);
-        let tfc = sdk.getTFC(tfcAddress, account);
-        let balance = await tfc.contract.methods.balanceOf(account.address).call();
-        expect(balance).to.be.equal(initialSupply.toString());
+        let tfc = sdk.getTFC(tfcAddress);
+        for (let holder of holders) {
+            let balance = await tfc.balanceOf(holder.address);
+            expect(balance.toString()).to.be.equal(new BN('100000000', 10).mul(new BN('1000000000000000000', 10)).toString());
+        }
+        let totalSupply = await tfc.totalSupply();
+        expect(totalSupply.toString()).to.be.equal(new BN(20).mul(new BN('100000000', 10).mul(new BN('1000000000000000000', 10))).toString());
     });
 })
