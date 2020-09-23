@@ -1,12 +1,14 @@
 {
   "name": "jasmine-eth-ts",
-  "version": "1.0.0",
-  "main": "src/index.ts",
+  "version": "1.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/Troublor/jasmine-eth-ts.git",
   "author": "Troublor",
   "license": "Apache-2.0",
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.test.ts",
+    "build": "tsc",
     "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library ./src/index.ts"
   },
   "dependencies": {
