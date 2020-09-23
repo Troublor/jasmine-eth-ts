@@ -3,4 +3,5 @@ import Account from "./Account";
 import TFC from "./TFC";
 
 export default SDK;
-export {Account, TFC};
+export {SDK, Account, TFC};
+// module.exports = SDK

@@ -6,8 +6,16 @@
     "esModuleInterop": true,
     "types": [
       "mocha"
-    ]
+    ],
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist",
+    "rootDir": "src"
   },
+  "include": [
+    "src"
+  ],
   "exclude": [
     "node_modules"
   ]
