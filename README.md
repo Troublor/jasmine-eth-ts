@@ -19,6 +19,15 @@ First thing to do is to construct an `SDK` object using an Ethereum endpoint (e.
 let sdk = new SDK("http://localhost:8545");
 ```
 
+For testing purposes, we provide a `MockEthereum` class which wrapper ganache-core to provide a test environment to use `SDK`. 
+Get the predefined accounts (each has 100 Ether) and endpoint:
+
+```typescript
+let mockEth = new MockEthereum();
+mockEth.predefinedPrivateKeys;
+mockEth.endpoint;
+```
+
 Using the `sdk` object, we can create a new Ethereum account:
 ```typescript
 let account: Account = sdk.createAccount();
