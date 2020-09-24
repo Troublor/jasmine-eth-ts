@@ -119,4 +119,67 @@ export default class SDK extends Web3Wrapper {
         let {privateKey} = this.web3.eth.accounts.create();
         return new Account(this.web3, privateKey);
     }
+
+    /**
+     * Get the ether balance of one account.
+     * The unit of returned value will be wei (10^-18 ether).
+     *
+     * @param address Ethereum account address
+     */
+    public balanceOf(address: Address): Promise<BN> {
+        return new Promise<BN>((resolve, reject) => {
+            this.web3.eth.getBalance(address)
+                .then(bal => {
+                    resolve(new BN(bal));
+                })
+                .catch(reject);
+        });
+    }
+
+    /**
+     * Transfer ether from sender to another address.
+     * The ether is in the unit of wei.
+     *
+     * @param to recipient address
+     * @param amount the amount of ether to transfer. (in the unit of wei)
+     * @param sender sender account.
+     */
+    public transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
+        return new Promise<void>((resolve, reject) => {
+            this.web3.eth.sendTransaction({
+                to: to,
+                value: amount,
+                from: sender ? sender.address : this.defaultWeb3Account.address,
+            })
+                .on("receipt", () => {
+                    if (!this._confirmationRequirement) {
+                        resolve();
+                    }
+                })
+                .on("confirmation", (confNumber) => {
+                    if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+                        resolve();
+                    }
+                })
+                .on("error", reject);
+        });
+    }
+
+    /**
+     * Convert wei unit to ether unit
+     *
+     * @param amount
+     */
+    public wei2ether(amount: BN): BN {
+        return new BN(this.web3.utils.fromWei(amount, 'ether'));
+    }
+
+    /**
+     * Convert ether unit to wei unit
+     *
+     * @param amount
+     */
+    public ether2wei(amount: BN): BN {
+        return new BN(this.web3.utils.toWei(amount, 'ether'));
+    }
 }

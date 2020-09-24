@@ -57,4 +57,33 @@ describe("SDK", () => {
         let totalSupply = await tfc.totalSupply();
         expect(totalSupply.toString()).to.be.equal(new BN(20).mul(new BN('100000000', 10).mul(new BN('1000000000000000000', 10))).toString());
     });
+
+    it('should convert ether to wei correctly', function () {
+        expect(
+            sdk.ether2wei(new BN("1")).toString()
+        ).to.be.equal(new BN("1000000000000000000").toString());
+    });
+
+    it('should convert wei to ether correctly', function () {
+        expect(
+            sdk.wei2ether(new BN("1000000000000000000")).toString()
+        ).to.be.equal(new BN("1").toString());
+    });
+
+    it('should get ether balance correctly', async function () {
+        for (let key of predefinedPrivateKeys) {
+            let balance = await sdk.balanceOf(sdk.retrieveAccount(key).address);
+            expect(balance.toString()).to.be.equal(new BN("1000000000000000000").mul(new BN(100)).toString()); // 100 ether for predefined accounts
+        }
+    });
+
+    it('should transfer ether correctly', async function () {
+        let from = sdk.retrieveAccount(predefinedPrivateKeys[0]);
+        let to = sdk.createAccount();
+        let balance = await sdk.balanceOf(to.address);
+        expect(balance.toString()).to.be.equal(sdk.ether2wei(new BN(0)).toString());
+        await sdk.transfer(to.address, sdk.ether2wei(new BN(1)).div(new BN(2)), from);
+        balance = await sdk.balanceOf(to.address);
+        expect(balance.toString()).to.be.equal(sdk.ether2wei(new BN(1)).div(new BN(2)).toString());
+    });
 })
