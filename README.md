@@ -6,6 +6,18 @@
 SDK wraps the interactions with `TFC` ERC20 Token contract on Ethereum. 
 A detailed documentation can be found in [`docs`](https://troublor.github.io/jasmine-eth-ts/)
 
+## Install 
+
+Using npm:
+```
+npm install jasmine-eth-ts
+```
+
+Or using yarn:
+```
+yarn add jasmine-eth-ts
+```
+
 ## Usage
 
 Import module:
