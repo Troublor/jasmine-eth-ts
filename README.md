@@ -40,6 +40,12 @@ mockEth.predefinedPrivateKeys;
 mockEth.endpoint;
 ```
 
+When using `MockEthereum`, you can create a new TFC ERC20 contract using:
+```typescript
+let contractAddress = await sdk.deployTFC(initialTokenHolders, creator);
+```
+`initialTokenHolders` must be an array of length 20 of `Account`s, who will split the initial 2 billion token supply evenly. 
+
 Using the `sdk` object, we can create a new Ethereum account:
 ```typescript
 let account: Account = sdk.createAccount();
