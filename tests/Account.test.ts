@@ -1,26 +1,27 @@
 import {expect} from "chai";
-import ganacheCore from "ganache-core";
-import accounts from "./accounts";
 import Account from "../src/Account";
 import Web3 from "web3";
+import MockEthereum from "../src/MockEthereum";
 
 describe("Account", () => {
 
     let web3: Web3;
+    let predefinedPrivateKeys;
 
     beforeEach(() => {
+        let mockEth = new MockEthereum();
         // @ts-ignore
-        web3 = new Web3(ganacheCore.provider({
-            accounts: accounts
-        }))
+        web3 = new Web3(mockEth.endpoint);
+        predefinedPrivateKeys = mockEth.predefinedPrivateKeys;
     });
 
     afterEach(() => {
         web3 = undefined;
+        predefinedPrivateKeys = undefined;
     })
 
     it('should be constructed correctly', function () {
-        let account = new Account(web3, accounts[0].secretKey);
-        expect(account.privateKey).to.be.equal(accounts[0].secretKey);
+        let account = new Account(web3, predefinedPrivateKeys[0]);
+        expect(account.privateKey).to.be.equal(predefinedPrivateKeys[0]);
     });
 })

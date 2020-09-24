@@ -1,23 +1,23 @@
 import {expect} from "chai";
 import SDK from "../src/SDK";
 import BN from "bn.js";
-import ganacheCore from "ganache-core";
-import accounts from "./accounts";
+import MockEthereum from "../src/MockEthereum";
 
 describe("SDK", () => {
 
     let sdk: SDK;
+    let predefinedPrivateKeys;
 
     beforeEach(() => {
+        let mockEth = new MockEthereum();
         // @ts-ignore
-        sdk = new SDK(ganacheCore.provider({
-            "accounts": accounts,
-            "logger": console,
-        }));
+        sdk = new SDK(mockEth.endpoint);
+        predefinedPrivateKeys = mockEth.predefinedPrivateKeys;
     });
 
     afterEach(() => {
         sdk = undefined;
+        predefinedPrivateKeys = undefined;
     })
 
     it('should be constructed correctly', function () {
@@ -45,7 +45,7 @@ describe("SDK", () => {
     });
 
     it('should be able to deploy TFC', async function () {
-        let holders = accounts.map(acc => sdk.retrieveAccount(acc.secretKey)).slice(0, 20);
+        let holders = predefinedPrivateKeys.map(key => sdk.retrieveAccount(key)).slice(0, 20);
         let tfcAddress = await sdk.deployTFC(holders, holders[0]);
         let code = await sdk.web3.eth.getCode(tfcAddress);
         expect(code).to.not.be.undefined;

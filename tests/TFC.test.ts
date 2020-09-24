@@ -1,11 +1,10 @@
 import {expect} from "chai";
 import SDK from "../src/SDK";
-import rawAccounts from "./accounts";
 import Account from "../src/Account";
 import {Address} from "../src";
 import BN from "bn.js";
 import TFC from "../src/TFC";
-import ganacheCore from "ganache-core";
+import MockEthereum from "../src/MockEthereum";
 
 describe("TFC", () => {
     let sdk: SDK;
@@ -19,11 +18,9 @@ describe("TFC", () => {
     beforeEach(async () => {
         // deploy smart contract
         // @ts-ignore
-        sdk = new SDK(ganacheCore.provider({
-            "accounts": rawAccounts,
-            "logger": console,
-        }));
-        accounts = rawAccounts.map(acc => sdk.retrieveAccount(acc.secretKey));
+        let mockEth = new MockEthereum();
+        sdk = new SDK(mockEth.endpoint);
+        accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
         sdk.setDefaultAccount(admin);
         tfcAddress = await sdk.deployTFC(accounts.slice(0, 20), admin);
