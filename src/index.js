@@ -23,6 +23,7 @@ exports.TFC = TFC_1.default;
 var MockEthereum_1 = __importDefault(require("./MockEthereum"));
 exports.MockEthereum = MockEthereum_1.default;
 __exportStar(require("./types"), exports);
+__exportStar(require("./utils"), exports);
 exports.default = SDK_1.default;
 // module.exports = SDK
 //# sourceMappingURL=index.js.map
