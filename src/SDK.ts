@@ -7,6 +7,7 @@ import BN from "bn.js";
 import fs from "fs";
 import path from "path";
 import Web3Core from "web3-core";
+import Manager from "./Manager";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -75,6 +76,25 @@ export default class SDK extends Web3Wrapper {
         });
     }
 
+    public deployManager(sender?: Account): Promise<Address> {
+        return new Promise<Address>(async (resolve, reject) => {
+            let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
+            let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.bin"));
+            let contract = new this.web3.eth.Contract(abi);
+            let tx = contract.deploy({
+                data: data.toString().trim(),
+            })
+            this.sendTransaction(tx, undefined, {
+                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                gas: 6000000
+            })
+                .then(async receipt => {
+                    resolve(receipt.contractAddress)
+                })
+                .catch(reject);
+        });
+    }
+
     /**
      * Get the {@link TFC} instance.
      *
@@ -100,6 +120,26 @@ export default class SDK extends Web3Wrapper {
 
         }
         return new TFC(this.web3, tfcAddress, privateKey);
+    }
+
+    public getManager(managerAddress: Address, privateKeyOrDefaultAccount?: string | Account): Manager {
+        let privateKey;
+        switch (typeof privateKeyOrDefaultAccount) {
+            case "string":
+                privateKey = privateKeyOrDefaultAccount;
+                break;
+            case "object":
+                privateKey = privateKeyOrDefaultAccount.privateKey;
+                break;
+            default:
+                if (this.defaultWeb3Account) {
+                    privateKey = this.defaultWeb3Account.privateKey;
+                } else {
+                    privateKey = undefined;
+                }
+
+        }
+        return new Manager(this.web3, managerAddress, privateKey);
     }
 
     /**

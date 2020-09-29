@@ -58,6 +58,14 @@ describe("SDK", () => {
         expect(totalSupply.toString()).to.be.equal(new BN(20).mul(new BN('100000000', 10).mul(new BN('1000000000000000000', 10))).toString());
     });
 
+    it('should be able to deploy TFCManager', async function () {
+        let admin = sdk.retrieveAccount(predefinedPrivateKeys[0]);
+        sdk.setDefaultAccount(admin);
+        let managerAddress = await sdk.deployManager();
+        let code = await sdk.web3.eth.getCode(managerAddress);
+        expect(code).to.not.be.undefined;
+    });
+
     it('should convert ether to wei correctly', function () {
         expect(
             sdk.ether2wei(new BN("1")).toString()

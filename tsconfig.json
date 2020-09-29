@@ -5,6 +5,7 @@
     "sourceMap": true,
     "esModuleInterop": true,
     "types": [
+      "src/contracts/*",
       "mocha"
     ],
     "declaration": true,
