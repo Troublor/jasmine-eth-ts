@@ -73,6 +73,12 @@
 				</a>
 				<p>SDK wraps the interactions with <code>TFC</code> ERC20 Token contract on Ethereum.
 				A detailed documentation can be found in <a href="https://troublor.github.io/jasmine-eth-ts/"><code>docs</code></a></p>
+				<a href="#install" id="install" style="color: inherit; text-decoration: none;">
+					<h2>Install</h2>
+				</a>
+				<p>Using npm:</p>
+				<pre><code>npm <span class="hljs-keyword">install</span> jasmine-eth-ts</code></pre><p>Or using yarn:</p>
+				<pre><code>yarn <span class="hljs-keyword">add</span><span class="bash"> jasmine-eth-ts</span></code></pre>
 				<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
 					<h2>Usage</h2>
 				</a>
@@ -81,6 +87,14 @@
 				<p>The entry point should <code>SDK</code> class.
 				First thing to do is to construct an <code>SDK</code> object using an Ethereum endpoint (e.g. local private chain <code>http://localhost:8545</code>).</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> sdk = <span class="hljs-keyword">new</span> SDK(<span class="hljs-string">"http://localhost:8545"</span>);</code></pre>
+				<p>For testing purposes, we provide a <code>MockEthereum</code> class which wrapper ganache-core to provide a test environment to use <code>SDK</code>.
+				Get the predefined accounts (each has 100 Ether) and endpoint:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> mockEth = <span class="hljs-keyword">new</span> MockEthereum();
+mockEth.predefinedPrivateKeys;
+mockEth.endpoint;</code></pre>
+				<p>When using <code>MockEthereum</code>, you can create a new TFC ERC20 contract using:</p>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> contractAddress = <span class="hljs-keyword">await</span> sdk.deployTFC(initialTokenHolders, creator);</code></pre>
+				<p><code>initialTokenHolders</code> must be an array of length 20 of <code>Account</code>s, who will split the initial 2 billion token supply evenly. </p>
 				<p>Using the <code>sdk</code> object, we can create a new Ethereum account:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> account: Account = sdk.createAccount();</code></pre>
 				<p>Or retrieve an existing account using private key:</p>
@@ -111,6 +125,9 @@
 						<a href="classes/account.html" class="tsd-kind-icon">Account</a>
 					</li>
 					<li class=" tsd-kind-class">
+						<a href="classes/manager.html" class="tsd-kind-icon">Manager</a>
+					</li>
+					<li class=" tsd-kind-class">
 						<a href="classes/mockethereum.html" class="tsd-kind-icon">Mock<wbr>Ethereum</a>
 					</li>
 					<li class=" tsd-kind-class">
@@ -124,6 +141,9 @@
 					</li>
 					<li class=" tsd-kind-type-alias">
 						<a href="globals.html#hash" class="tsd-kind-icon">Hash</a>
+					</li>
+					<li class=" tsd-kind-function">
+						<a href="globals.html#validateandconvertaddress" class="tsd-kind-icon">validate<wbr>And<wbr>Convert<wbr>Address</a>
 					</li>
 				</ul>
 			</nav>
