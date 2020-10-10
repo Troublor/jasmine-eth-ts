@@ -87,7 +87,6 @@ class Manager extends Web3Wrapper_1.default {
      */
     signTFCClaim(recipient, amount, nonce, signer) {
         const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address);
-        console.log(hash);
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
     }
 }
