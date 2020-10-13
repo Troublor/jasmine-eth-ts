@@ -1,8 +1,8 @@
 {
   "name": "jasmine-eth-ts",
-  "version": "1.0.8",
-  "main": "src/index.js",
-  "types": "src/index.d.ts",
+  "version": "1.0.9",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "repository": "https://github.com/Troublor/jasmine-eth-ts.git",
   "author": "Troublor",
   "license": "Apache-2.0",
