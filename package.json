@@ -9,7 +9,7 @@
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.test.ts",
     "build": "tsc",
-    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library ./src/index.ts"
+    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library index.ts"
   },
   "dependencies": {
     "bn.js": "^5.1.3",

@@ -1,25 +1,25 @@
-import {expect} from "chai";
-import SDK from "../src/SDK";
-import Account from "../src/Account";
-import {Address} from "../index";
-import BN from "bn.js";
-import TFC from "../src/TFC";
-import MockEthereum from "../src/MockEthereum";
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const chai_1 = require("chai");
+const SDK_1 = __importDefault(require("../src/SDK"));
+const bn_js_1 = __importDefault(require("bn.js"));
+const MockEthereum_1 = __importDefault(require("../src/MockEthereum"));
 describe("TFC", () => {
-    let sdk: SDK;
-    let admin: Account
-    let tfcAddress: Address;
-    let initialSupply = new BN(20).mul(new BN('100000000').mul(new BN('1000000000000000000')));
-    let tfc: TFC;
-    let account1: Account;
-    let accounts: Account[];
-
+    let sdk;
+    let admin;
+    let tfcAddress;
+    let initialSupply = new bn_js_1.default(20).mul(new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')));
+    let tfc;
+    let account1;
+    let accounts;
     beforeEach(async () => {
         // deploy smart contract
         // @ts-ignore
-        let mockEth = new MockEthereum();
-        sdk = new SDK(mockEth.endpoint);
+        let mockEth = new MockEthereum_1.default();
+        sdk = new SDK_1.default(mockEth.endpoint);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
         sdk.setDefaultAccount(admin);
@@ -27,7 +27,6 @@ describe("TFC", () => {
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
     });
-
     afterEach(() => {
         sdk = undefined;
         admin = undefined;
@@ -35,120 +34,98 @@ describe("TFC", () => {
         tfc = undefined;
         account1 = undefined;
         accounts = undefined;
-    })
-
+    });
     it('should be constructed correctly', async function () {
         let balance = await tfc.contract.methods.balanceOf(account1.address).call();
-        expect(balance).to.be.equal(initialSupply.div(new BN(20)).toString());
+        chai_1.expect(balance).to.be.equal(initialSupply.div(new bn_js_1.default(20)).toString());
     });
-
     it('should return correct name', async function () {
         let name = await tfc.name();
-        expect(name).to.be.equal("TFCToken");
+        chai_1.expect(name).to.be.equal("TFCToken");
     });
-
     it('should return correct symbol', async function () {
         let symbol = await tfc.symbol();
-        expect(symbol).to.be.equal("TFC");
+        chai_1.expect(symbol).to.be.equal("TFC");
     });
-
     it('should return correct decimals', async function () {
         let decimals = await tfc.decimals();
-        expect(decimals).to.be.equal(18);
+        chai_1.expect(decimals).to.be.equal(18);
     });
-
     it('should return correct initial supply', async function () {
         let totalSupply = await tfc.totalSupply();
-        expect(totalSupply.toString()).to.be.equal(initialSupply.toString());
+        chai_1.expect(totalSupply.toString()).to.be.equal(initialSupply.toString());
     });
-
     it('should return default no allowance', async function () {
         let allowance = await tfc.allowance(admin.address, account1.address);
-        expect(allowance.toString()).to.be.equal(new BN(0).toString());
+        chai_1.expect(allowance.toString()).to.be.equal(new bn_js_1.default(0).toString());
     });
-
     it('should return correct balance of admin', async function () {
         let balance = await tfc.balanceOf(account1.address);
-        expect(balance.toString()).to.be.equal(initialSupply.div(new BN(20)).toString());
+        chai_1.expect(balance.toString()).to.be.equal(initialSupply.div(new bn_js_1.default(20)).toString());
     });
-
     it('should be able to approve', async function () {
-        await tfc.approve(account1.address, new BN(100));
+        await tfc.approve(account1.address, new bn_js_1.default(100));
         let allowance = await tfc.allowance(admin.address, account1.address);
-        expect(allowance.toString()).to.be.equal(new BN(100).toString());
+        chai_1.expect(allowance.toString()).to.be.equal(new bn_js_1.default(100).toString());
     });
-
     it('should be able to approve using different account', async function () {
-        await tfc.approve(admin.address, new BN(100), account1);
+        await tfc.approve(admin.address, new bn_js_1.default(100), account1);
         let allowance = await tfc.allowance(admin.address, account1.address);
-        expect(allowance.toString()).to.be.equal(new BN(0).toString());
+        chai_1.expect(allowance.toString()).to.be.equal(new bn_js_1.default(0).toString());
         allowance = await tfc.allowance(account1.address, admin.address);
-        expect(allowance.toString()).to.be.equal(new BN(100).toString());
+        chai_1.expect(allowance.toString()).to.be.equal(new bn_js_1.default(100).toString());
     });
-
     it('should be able to transfer', async function () {
         let originalBalanceAdmin = await tfc.balanceOf(admin.address);
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.transfer(account1.address, new BN(50));
+        await tfc.transfer(account1.address, new bn_js_1.default(50));
         let balance = await tfc.balanceOf(admin.address);
-        expect(balance.toString()).to.be.equal(originalBalanceAdmin.sub(new BN(50)).toString())
+        chai_1.expect(balance.toString()).to.be.equal(originalBalanceAdmin.sub(new bn_js_1.default(50)).toString());
         balance = await tfc.balanceOf(account1.address);
-        expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new BN(50)).toString());
+        chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(50)).toString());
     });
-
     it('should not be able to transfer when zero balance', function (done) {
-        tfc.transfer(admin.address, new BN(1), accounts[20])
+        tfc.transfer(admin.address, new bn_js_1.default(1), accounts[20])
             .catch(() => {
-                done();
-            });
+            done();
+        });
     });
-
     it('should be able to transferFrom', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.approve(account1.address, new BN(100));
-        await tfc.transferFrom(admin.address, account1.address, new BN(50), account1);
+        await tfc.approve(account1.address, new bn_js_1.default(100));
+        await tfc.transferFrom(admin.address, account1.address, new bn_js_1.default(50), account1);
         let balance = await tfc.balanceOf(account1.address);
-        expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new BN(50)).toString());
+        chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(50)).toString());
     });
-
     it('should not be able to transferFrom without allowance', function (done) {
-        tfc.transferFrom(admin.address, account1.address, new BN(50), account1)
+        tfc.transferFrom(admin.address, account1.address, new bn_js_1.default(50), account1)
             .catch(() => {
-                done();
-            })
+            done();
+        });
     });
-
     it('should be able to mint', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.mint(account1.address, new BN(100));
+        await tfc.mint(account1.address, new bn_js_1.default(100));
         let balance = await tfc.balanceOf(account1.address);
-        expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new BN(100)).toString());
+        chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(100)).toString());
     });
-
     it('should not be able to mint without minter role', function (done) {
-        tfc.mint(account1.address, new BN(100), account1)
+        tfc.mint(account1.address, new bn_js_1.default(100), account1)
             .catch(() => {
-                done();
-            })
+            done();
+        });
     });
-
     it('should be able to list admin addresses', async function () {
         let admins = await tfc.adminAddresses();
-        expect(admins).to.be.lengthOf(1);
-        expect(admins[0]).to.be.equal(admin.address);
+        chai_1.expect(admins).to.be.lengthOf(1);
+        chai_1.expect(admins[0]).to.be.equal(admin.address);
     });
-
     it('should be able to check if it can mint', async function () {
-        expect(
-            await tfc.canMint()
-        ).to.be.true;
-        expect(
-            await tfc.canMint(account1)
-        ).to.be.false;
+        chai_1.expect(await tfc.canMint()).to.be.true;
+        chai_1.expect(await tfc.canMint(account1)).to.be.false;
     });
-
     it('should be able to do one-to-many transfer', async function () {
-        let amount = new BN("10000000").mul(new BN("1000000000000000000"));
+        let amount = new bn_js_1.default("10000000").mul(new bn_js_1.default("1000000000000000000"));
         let bundled = [];
         for (let i = 0; i < 10; i++) {
             bundled.push({
@@ -158,10 +135,11 @@ describe("TFC", () => {
         }
         await tfc.one2manyTransfer(bundled, admin);
         let balance = await tfc.balanceOf(admin.address);
-        expect(balance.toString()).to.be.equal(new BN(0).toString());
+        chai_1.expect(balance.toString()).to.be.equal(new bn_js_1.default(0).toString());
         for (let i = 0; i < 10; i++) {
             let balance = await tfc.balanceOf(accounts[20 + i].address);
-            expect(balance.toString()).to.be.equal(amount.toString());
+            chai_1.expect(balance.toString()).to.be.equal(amount.toString());
         }
     });
 });
+//# sourceMappingURL=TFC.test.js.map

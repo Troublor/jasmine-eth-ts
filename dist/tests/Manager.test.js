@@ -1,58 +1,56 @@
-import Account from "../src/Account";
-import Manager from "../src/Manager";
-import MockEthereum from "../src/MockEthereum";
-import SDK, {TFC} from "../index";
-import BN from "bn.js";
-import {expect} from "chai";
-
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const MockEthereum_1 = __importDefault(require("../src/MockEthereum"));
+const index_1 = __importDefault(require("../index"));
+const bn_js_1 = __importDefault(require("bn.js"));
+const chai_1 = require("chai");
 describe("Manager", () => {
-    let accounts: Account[];
-    let manager: Manager;
-    let mockEth: MockEthereum;
-    let sdk: SDK;
-    let tfc: TFC;
-
+    let accounts;
+    let manager;
+    let mockEth;
+    let sdk;
+    let tfc;
     beforeEach(async () => {
-        mockEth = new MockEthereum();
-        sdk = new SDK(mockEth.endpoint);
+        mockEth = new MockEthereum_1.default();
+        sdk = new index_1.default(mockEth.endpoint);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         sdk.setDefaultAccount(accounts[0]);
         const address = await sdk.deployManager();
         manager = sdk.getManager(address);
         tfc = sdk.getTFC(await manager.tfcAddress());
     });
-
     it('should be able to sign claim message', async function () {
         const [admin, user,] = accounts;
         const nonce = await manager.getUnusedNonce();
-        let sig = manager.signTFCClaim(user.address, new BN("1000000000000000000"), nonce, admin);
-        expect(sig).to.not.be.undefined;
+        let sig = manager.signTFCClaim(user.address, new bn_js_1.default("1000000000000000000"), nonce, admin);
+        chai_1.expect(sig).to.not.be.undefined;
     });
-
     it('should be able to do a valid TFC claim', async function () {
         const [admin, user,] = accounts;
-        const amount = new BN("1000000000000000000");
+        const amount = new bn_js_1.default("1000000000000000000");
         let nonce = await manager.getUnusedNonce();
         let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
         await manager.claimTFC(amount, nonce, sig, user);
         let balance = await tfc.balanceOf(user.address);
-        expect(balance.toString()).to.be.equal(amount.toString());
-
+        chai_1.expect(balance.toString()).to.be.equal(amount.toString());
         nonce = await manager.getUnusedNonce();
         sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
         await manager.claimTFC(amount, nonce, sig, user);
         balance = await tfc.balanceOf(user.address);
-        expect(balance.toString()).to.be.equal(amount.mul(new BN(2)).toString());
+        chai_1.expect(balance.toString()).to.be.equal(amount.mul(new bn_js_1.default(2)).toString());
     });
-
     it('should test', async function () {
         const [admin, user,] = accounts;
-        console.log(admin.address)
-        console.log(user.address)
-        const amount = new BN("1");
-        const nonce = new BN("0");
+        console.log(admin.address);
+        console.log(user.address);
+        const amount = new bn_js_1.default("1");
+        const nonce = new bn_js_1.default("0");
         manager = sdk.getManager("0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab");
         let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
-        console.log("sig: " + sig)
+        console.log("sig: " + sig);
     });
 });
+//# sourceMappingURL=Manager.test.js.map

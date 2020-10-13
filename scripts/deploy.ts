@@ -1,4 +1,4 @@
-import SDK from "../src";
+import SDK from "../index";
 
 async function deploy(endpoint: string) {
     let sdk = new SDK(endpoint);
