@@ -1,6 +1,6 @@
 {
   "name": "jasmine-eth-ts",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "main": "src/index.js",
   "types": "src/index.d.ts",
   "repository": "https://github.com/Troublor/jasmine-eth-ts.git",
