@@ -41,6 +41,10 @@ export default class TFC extends Web3Wrapper {
         return this._contract;
     }
 
+    get abi(): Web3Utils.AbiItem[] {
+        return this._abi;
+    }
+
     /**
      * Get the name of TFC Token.
      */

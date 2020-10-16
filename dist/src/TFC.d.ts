@@ -1,6 +1,7 @@
 import { Address } from "./types";
 import { TFCToken } from "./contracts/TFCToken";
 import Web3 from "web3";
+import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
 import Account from "./Account";
@@ -27,6 +28,7 @@ export default class TFC extends Web3Wrapper {
      * Get the web3.js contract object.
      */
     get contract(): TFCToken;
+    get abi(): Web3Utils.AbiItem[];
     /**
      * Get the name of TFC Token.
      */

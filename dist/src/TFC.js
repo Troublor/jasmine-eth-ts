@@ -34,6 +34,9 @@ class TFC extends Web3Wrapper_1.default {
     get contract() {
         return this._contract;
     }
+    get abi() {
+        return this._abi;
+    }
     /**
      * Get the name of TFC Token.
      */
