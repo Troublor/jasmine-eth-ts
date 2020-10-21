@@ -53,7 +53,7 @@ export default class Manager extends Web3Wrapper {
      * @param nonce
      */
     public async nonceUsed(nonce: BN): Promise<boolean> {
-        return this._contract.methods.usedNonces(nonce.toString("hex")).call();
+        return this._contract.methods.usedNonces(nonce.toString()).call();
     }
 
     /**

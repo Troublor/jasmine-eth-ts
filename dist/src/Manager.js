@@ -45,7 +45,7 @@ class Manager extends Web3Wrapper_1.default {
      * @param nonce
      */
     async nonceUsed(nonce) {
-        return this._contract.methods.usedNonces(nonce.toString("hex")).call();
+        return this._contract.methods.usedNonces(nonce.toString()).call();
     }
     /**
      * Get one unused nonce, which will be used in signing TFCClaim message
