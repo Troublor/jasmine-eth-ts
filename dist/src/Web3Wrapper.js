@@ -32,7 +32,7 @@ class Web3Wrapper {
     set confirmationRequirement(value) {
         this._confirmationRequirement = value;
     }
-    async signTransaction(transaction, to, options = {}) {
+    async signContractTransaction(transaction, to, options = {}) {
         if (!options.from) {
             options.from = this._defaultWeb3Account;
         }
@@ -50,10 +50,41 @@ class Web3Wrapper {
         };
         return await options.from.signTransaction(rawTx);
     }
+    async signSimpleTransaction(transaction, to, options = {}) {
+        transaction.to = to;
+        if (options.value) {
+            transaction.value = options.value;
+        }
+        if (options.gas) {
+            transaction.gas = options.gas;
+        }
+        if (!transaction.gasPrice) {
+            transaction.gasPrice = await this.web3.eth.getGasPrice();
+        }
+        if (!transaction.gas) {
+            transaction.gas = await this.web3.eth.estimateGas(transaction);
+        }
+        if (!transaction.nonce) {
+            transaction.nonce = await this.web3.eth.getTransactionCount(transaction.from, "pending");
+        }
+        if (!transaction.chainId) {
+            transaction.chainId = await this.web3.eth.getChainId();
+        }
+        if (!options.from) {
+            options.from = this._defaultWeb3Account;
+        }
+        return await options.from.signTransaction(transaction);
+    }
     async sendTransaction(transaction, to, options = {}) {
         return new Promise(async (resolve, reject) => {
             try {
-                let signedTx = await this.signTransaction(transaction, to, options);
+                let signedTx;
+                if (transaction.hasOwnProperty("estimateGas")) {
+                    signedTx = await this.signContractTransaction(transaction, to, options);
+                }
+                else {
+                    signedTx = await this.signSimpleTransaction(transaction, to, options);
+                }
                 const promiEvent = this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
                 let resolved = false;
                 const confirmationHandler = (confNumber, receipt) => {
@@ -61,12 +92,11 @@ class Web3Wrapper {
                         return;
                     }
                     if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-                        resolve(receipt);
-                        console.log("resolve2");
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
                         // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
+                        resolve(receipt);
                         resolved = true;
                     }
                 };
@@ -75,22 +105,17 @@ class Web3Wrapper {
                         return;
                     }
                     if (!this._confirmationRequirement) {
-                        console.log("resolve1");
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
                         // @ts-ignore
-                        console.log("count:", promiEvent.listenerCount("confirmation"));
-                        // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
-                        // @ts-ignore
-                        console.log("count:", promiEvent.listenerCount("confirmation"));
                         resolve(receipt);
                         resolved = true;
                     }
                 };
                 promiEvent
                     .once("receipt", receiptHandler)
-                    .once("confirmation", confirmationHandler)
+                    .on("confirmation", confirmationHandler)
                     .once("error", reject);
             }
             catch (e) {

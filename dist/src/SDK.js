@@ -190,23 +190,30 @@ class SDK extends Web3Wrapper_1.default {
      * @param sender sender account.
      */
     transfer(to, amount, sender) {
-        return new Promise((resolve, reject) => {
-            this.web3.eth.sendTransaction({
+        return new Promise(async (resolve, reject) => {
+            const tx = {
                 to: to,
                 value: amount,
                 from: sender ? sender.address : this.defaultWeb3Account.address,
-            })
-                .on("receipt", () => {
-                if (!this._confirmationRequirement) {
-                    resolve();
-                }
-            })
-                .on("confirmation", (confNumber) => {
-                if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-                    resolve();
-                }
-            })
-                .on("error", reject);
+            };
+            this.sendTransaction(tx, to, { from: sender.defaultWeb3Account }).then(() => {
+                resolve();
+            }).catch(reject);
+            // tx['gas'] = await this.web3.eth.estimateGas(tx);
+            // tx['gasPrice'] = await this.web3.eth.getGasPrice();
+            // const signedTx = await sender.defaultWeb3Account.signTransaction(tx);
+            // this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+            //     .on("receipt", () => {
+            //         if (!this._confirmationRequirement) {
+            //             resolve();
+            //         }
+            //     })
+            //     .on("confirmation", (confNumber) => {
+            //         if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+            //             resolve();
+            //         }
+            //     })
+            //     .on("error", reject);
         });
     }
     /**
