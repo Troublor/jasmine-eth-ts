@@ -54,18 +54,44 @@ class Web3Wrapper {
         return new Promise(async (resolve, reject) => {
             try {
                 let signedTx = await this.signTransaction(transaction, to, options);
-                this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-                    .on("receipt", receipt => {
-                    if (!this._confirmationRequirement) {
-                        resolve(receipt);
+                const promiEvent = this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+                let resolved = false;
+                const confirmationHandler = (confNumber, receipt) => {
+                    if (resolved) {
+                        return;
                     }
-                })
-                    .on("confirmation", (confNumber, receipt) => {
                     if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
                         resolve(receipt);
+                        console.log("resolve2");
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("receipt");
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("confirmation");
+                        resolved = true;
                     }
-                })
-                    .on("error", reject);
+                };
+                const receiptHandler = receipt => {
+                    if (resolved) {
+                        return;
+                    }
+                    if (!this._confirmationRequirement) {
+                        console.log("resolve1");
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("receipt");
+                        // @ts-ignore
+                        console.log("count:", promiEvent.listenerCount("confirmation"));
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("confirmation");
+                        // @ts-ignore
+                        console.log("count:", promiEvent.listenerCount("confirmation"));
+                        resolve(receipt);
+                        resolved = true;
+                    }
+                };
+                promiEvent
+                    .once("receipt", receiptHandler)
+                    .once("confirmation", confirmationHandler)
+                    .once("error", reject);
             }
             catch (e) {
                 reject(e);

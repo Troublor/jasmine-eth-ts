@@ -5,6 +5,16 @@ import {TransactionObject} from "./contracts/types";
 import {ContractSendMethod} from "web3-eth-contract";
 import BN from "bn.js";
 
+export interface TransactionConfig {
+    from: string;
+    to: string;
+    value?: number | string | BN;
+    gas?: number | string;
+    gasPrice?: number | string | BN;
+    data?: string;
+    nonce?: number;
+    chainId?: number;
+}
 
 export default abstract class Web3Wrapper {
     protected _web3: Web3;
@@ -48,7 +58,7 @@ export default abstract class Web3Wrapper {
         this._confirmationRequirement = value;
     }
 
-    protected async signTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.SignedTransaction> {
+    protected async signContractTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.SignedTransaction> {
         if (!options.from) {
             options.from = this._defaultWeb3Account;
         }
@@ -67,22 +77,73 @@ export default abstract class Web3Wrapper {
         return await options.from.signTransaction(rawTx);
     }
 
-    protected async sendTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.TransactionReceipt> {
+    protected async signSimpleTransaction(transaction: TransactionConfig, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.SignedTransaction> {
+        transaction.to = to;
+        if (options.value) {
+            transaction.value = options.value;
+        }
+        if (options.gas) {
+            transaction.gas = options.gas;
+        }
+        if (!transaction.gasPrice) {
+            transaction.gasPrice = await this.web3.eth.getGasPrice();
+        }
+        if (!transaction.gas) {
+            transaction.gas = await this.web3.eth.estimateGas(transaction);
+        }
+        if (!transaction.nonce) {
+            transaction.nonce = await this.web3.eth.getTransactionCount(transaction.from, "pending");
+        }
+        if (!transaction.chainId) {
+            transaction.chainId = await this.web3.eth.getChainId();
+        }
+        if (!options.from) {
+            options.from = this._defaultWeb3Account;
+        }
+        return await options.from.signTransaction(transaction);
+    }
+
+    protected async sendTransaction(transaction: TransactionObject<any> | ContractSendMethod | TransactionConfig, to: Address, options: { from?: Web3Core.Account, value?: number | string | BN, gas?: number } = {}): Promise<Web3Core.TransactionReceipt> {
         return new Promise<Web3Core.TransactionReceipt>(async (resolve, reject) => {
             try {
-                let signedTx = await this.signTransaction(transaction, to, options);
-                this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-                    .on("receipt", receipt => {
-                        if (!this._confirmationRequirement) {
-                            resolve(receipt);
-                        }
-                    })
-                    .on("confirmation", (confNumber, receipt) => {
-                        if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-                            resolve(receipt);
-                        }
-                    })
-                    .on("error", reject);
+                let signedTx;
+                if (transaction.hasOwnProperty("estimateGas")) {
+                    signedTx = await this.signContractTransaction(transaction as (TransactionObject<any> | ContractSendMethod), to, options);
+                } else {
+                    signedTx = await this.signSimpleTransaction(transaction as TransactionConfig, to, options)
+                }
+                const promiEvent = this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+                let resolved = false;
+                const confirmationHandler = (confNumber, receipt) => {
+                    if (resolved) {
+                        return;
+                    }
+                    if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("receipt");
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("confirmation");
+                        resolve(receipt);
+                        resolved = true;
+                    }
+                };
+                const receiptHandler = receipt => {
+                    if (resolved) {
+                        return;
+                    }
+                    if (!this._confirmationRequirement) {
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("receipt");
+                        // @ts-ignore
+                        promiEvent.removeAllListeners("confirmation");
+                        resolve(receipt);
+                        resolved = true;
+                    }
+                };
+                promiEvent
+                    .once("receipt", receiptHandler)
+                    .on("confirmation", confirmationHandler)
+                    .once("error", reject)
             } catch (e) {
                 reject(e);
             }

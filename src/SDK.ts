@@ -198,23 +198,32 @@ export default class SDK extends Web3Wrapper {
      * @param sender sender account.
      */
     public transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
-        return new Promise<void>((resolve, reject) => {
-            this.web3.eth.sendTransaction({
+        return new Promise<void>(async (resolve, reject) => {
+            const tx = {
                 to: to,
                 value: amount,
                 from: sender ? sender.address : this.defaultWeb3Account.address,
-            })
-                .on("receipt", () => {
-                    if (!this._confirmationRequirement) {
-                        resolve();
-                    }
-                })
-                .on("confirmation", (confNumber) => {
-                    if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-                        resolve();
-                    }
-                })
-                .on("error", reject);
+                // nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
+            };
+            this.sendTransaction(tx, to, {from: sender.defaultWeb3Account}).then(() => {
+                resolve()
+            }).catch(reject);
+
+            // tx['gas'] = await this.web3.eth.estimateGas(tx);
+            // tx['gasPrice'] = await this.web3.eth.getGasPrice();
+            // const signedTx = await sender.defaultWeb3Account.signTransaction(tx);
+            // this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
+            //     .on("receipt", () => {
+            //         if (!this._confirmationRequirement) {
+            //             resolve();
+            //         }
+            //     })
+            //     .on("confirmation", (confNumber) => {
+            //         if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+            //             resolve();
+            //         }
+            //     })
+            //     .on("error", reject);
         });
     }
 

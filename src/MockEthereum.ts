@@ -1,4 +1,5 @@
 import ganacheCore from "ganache-core";
+import Account from "./Account";
 
 /**
  * A Mock Ethereum network, based on ganache-core, which provides predefined accounts (with 100 ethers each) and an endpoint for SDK.
@@ -60,4 +61,6 @@ export default class MockEthereum {
         });
     }
 }
+
+
 
