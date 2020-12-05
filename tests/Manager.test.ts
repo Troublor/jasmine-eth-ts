@@ -44,4 +44,11 @@ describe("Manager", () => {
         balance = await tfc.balanceOf(user.address);
         expect(balance.toString()).to.be.equal(amount.mul(new BN(2)).toString());
     });
+
+    it('should allow deployer to mint', async function () {
+        let originalBalance = await tfc.balanceOf(accounts[0].address);
+        await tfc.mint(accounts[0].address, new BN(100), accounts[0]);
+        let balance = await tfc.balanceOf(accounts[0].address);
+        expect(originalBalance.add(new BN(100)).toString()).to.be.equal(balance.toString());
+    });
 });
