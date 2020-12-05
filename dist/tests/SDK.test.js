@@ -42,16 +42,12 @@ describe("SDK", () => {
     });
     it('should be able to deploy TFC', async function () {
         let holders = predefinedPrivateKeys.map(key => sdk.retrieveAccount(key)).slice(0, 20);
-        let tfcAddress = await sdk.deployTFC(holders, holders[0]);
+        let tfcAddress = await sdk.deployTFC(holders[0]);
         let code = await sdk.web3.eth.getCode(tfcAddress);
         chai_1.expect(code).to.not.be.undefined;
         let tfc = sdk.getTFC(tfcAddress);
-        for (let holder of holders) {
-            let balance = await tfc.balanceOf(holder.address);
-            chai_1.expect(balance.toString()).to.be.equal(new bn_js_1.default('100000000', 10).mul(new bn_js_1.default('1000000000000000000', 10)).toString());
-        }
         let totalSupply = await tfc.totalSupply();
-        chai_1.expect(totalSupply.toString()).to.be.equal(new bn_js_1.default(20).mul(new bn_js_1.default('100000000', 10).mul(new bn_js_1.default('1000000000000000000', 10))).toString());
+        chai_1.expect(totalSupply.toNumber()).to.be.equal(0);
     });
     it('should be able to deploy TFCManager', async function () {
         let admin = sdk.retrieveAccount(predefinedPrivateKeys[0]);

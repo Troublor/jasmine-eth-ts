@@ -204,7 +204,6 @@ export default class TFC extends Web3Wrapper {
      * Mint a certain amount of tokens from nowhere and put the tokens in one account.
      * The transaction sender must be the one of administrators listed by {@link TFC.adminAddresses}.
      *
-     * @deprecated
      * @param to Ethereum address of the account to received the minted tokens
      * @param amount the amount of tokens to mint
      * @param sender (optional) transaction sender. If omitted, use the default account.

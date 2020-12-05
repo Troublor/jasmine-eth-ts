@@ -23,9 +23,13 @@ describe("TFC", () => {
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
         sdk.setDefaultAccount(admin);
-        tfcAddress = await sdk.deployTFC(accounts.slice(0, 20), admin);
+        tfcAddress = await sdk.deployTFC(admin);
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
+        // make initial supply
+        for (const acc of accounts) {
+            await tfc.mint(acc.address, new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')), admin);
+        }
     });
     afterEach(() => {
         sdk = undefined;

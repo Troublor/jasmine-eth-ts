@@ -44,15 +44,4 @@ describe("Manager", () => {
         balance = await tfc.balanceOf(user.address);
         expect(balance.toString()).to.be.equal(amount.mul(new BN(2)).toString());
     });
-
-    it('should test', async function () {
-        const [admin, user,] = accounts;
-        console.log(admin.address)
-        console.log(user.address)
-        const amount = new BN("1");
-        const nonce = new BN("0");
-        manager = sdk.getManager("0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab");
-        let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
-        console.log("sig: " + sig)
-    });
 });

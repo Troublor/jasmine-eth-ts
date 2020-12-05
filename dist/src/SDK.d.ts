@@ -25,10 +25,9 @@ export default class SDK extends Web3Wrapper {
     /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *
-     * @param initialHolders the list of initial accounts that will get initial supply (100 million token each) (the number must be 20)
      * @param sender the transaction sender who creates the contract
      */
-    deployTFC(initialHolders: Account[], sender?: Account): Promise<Address>;
+    deployTFC(sender?: Account): Promise<Address>;
     /**
      * Deploy TFCManager contract on the underling blockchain.
      * The TFCManager contract will automatically deploy a TFC ERC20 contract and provides TFC claim service for users.

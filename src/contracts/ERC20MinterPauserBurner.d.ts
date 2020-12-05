@@ -13,13 +13,13 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class TFCToken extends Contract {
+export class ERC20MinterPauserBurner extends Contract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
   );
-  clone(): TFCToken;
+  clone(): ERC20MinterPauserBurner;
   methods: {
     BURNER_ROLE(): TransactionObject<string>;
 
@@ -76,11 +76,6 @@ export class TFCToken extends Contract {
     mint(to: string, amount: number | string): TransactionObject<void>;
 
     name(): TransactionObject<string>;
-
-    one2manyTransfer(
-      tos: string[],
-      amounts: (number | string)[]
-    ): TransactionObject<boolean>;
 
     pause(): TransactionObject<void>;
 

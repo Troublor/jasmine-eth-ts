@@ -6,7 +6,8 @@ import BN from "bn.js";
 import TFC from "../src/TFC";
 import MockEthereum from "../src/MockEthereum";
 
-describe("TFC", () => {
+describe("TFC", function () {
+    this.timeout(5000);
     let sdk: SDK;
     let admin: Account
     let tfcAddress: Address;
@@ -23,9 +24,13 @@ describe("TFC", () => {
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
         sdk.setDefaultAccount(admin);
-        tfcAddress = await sdk.deployTFC(accounts.slice(0, 20), admin);
+        tfcAddress = await sdk.deployTFC(admin);
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
+        // make initial supply
+        for (const acc of accounts.slice(0, 20)) {
+            await tfc.mint(acc.address, new BN('100000000').mul(new BN('1000000000000000000')), admin);
+        }
     });
 
     afterEach(() => {
