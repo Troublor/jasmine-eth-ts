@@ -34,6 +34,16 @@ export class TFCManager extends Contract {
     usedNonces(arg0: number | string): TransactionObject<boolean>;
   };
   events: {
+    ClaimTFC: ContractEvent<{
+      recipient: string;
+      amount: string;
+      nonce: string;
+      sig: string;
+      0: string;
+      1: string;
+      2: string;
+      3: string;
+    }>;
     allEvents: (
       options?: EventOptions,
       cb?: Callback<EventLog>
