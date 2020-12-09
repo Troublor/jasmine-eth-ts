@@ -4,6 +4,7 @@ import MockEthereum from "../src/MockEthereum";
 import SDK, {TFC} from "../index";
 import BN from "bn.js";
 import {expect} from "chai";
+import Web3Core from "web3-core";
 
 describe("Manager", () => {
     let accounts: Account[];
@@ -14,10 +15,9 @@ describe("Manager", () => {
 
     beforeEach(async () => {
         mockEth = new MockEthereum();
-        sdk = new SDK(mockEth.endpoint);
+        sdk = new SDK(mockEth.endpoint as unknown as Web3Core.provider);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
-        sdk.setDefaultAccount(accounts[0]);
-        const address = await sdk.deployManager();
+        const address = await sdk.deployManager(accounts[0]);
         manager = sdk.getManager(address);
         tfc = sdk.getTFC(await manager.tfcAddress());
     });

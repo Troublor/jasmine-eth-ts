@@ -17,8 +17,7 @@ describe("Manager", () => {
         mockEth = new MockEthereum_1.default();
         sdk = new index_1.default(mockEth.endpoint);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
-        sdk.setDefaultAccount(accounts[0]);
-        const address = await sdk.deployManager();
+        const address = await sdk.deployManager(accounts[0]);
         manager = sdk.getManager(address);
         tfc = sdk.getTFC(await manager.tfcAddress());
     });
@@ -42,15 +41,11 @@ describe("Manager", () => {
         balance = await tfc.balanceOf(user.address);
         chai_1.expect(balance.toString()).to.be.equal(amount.mul(new bn_js_1.default(2)).toString());
     });
-    it('should test', async function () {
-        const [admin, user,] = accounts;
-        console.log(admin.address);
-        console.log(user.address);
-        const amount = new bn_js_1.default("1");
-        const nonce = new bn_js_1.default("0");
-        manager = sdk.getManager("0xe78a0f7e598cc8b0bb87894b0f60dd2a88d6a8ab");
-        let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
-        console.log("sig: " + sig);
+    it('should allow deployer to mint', async function () {
+        let originalBalance = await tfc.balanceOf(accounts[0].address);
+        await tfc.mint(accounts[0].address, new bn_js_1.default(100), accounts[0]);
+        let balance = await tfc.balanceOf(accounts[0].address);
+        chai_1.expect(originalBalance.add(new bn_js_1.default(100)).toString()).to.be.equal(balance.toString());
     });
 });
 //# sourceMappingURL=Manager.test.js.map

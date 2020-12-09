@@ -8,7 +8,7 @@ import Web3 from "web3";
  *
  * @param payload the string to validate and convert
  */
-export function validateAndConvertAddress(payload: string): Address {
+export function validateAndConvertAddress(payload: string): Address | null {
     if (Web3.utils.isAddress(payload)) {
         if (!payload.startsWith("0x")) {
             payload = '0x' + payload;

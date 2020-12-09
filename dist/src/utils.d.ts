@@ -6,5 +6,5 @@ import { Address } from "./types";
  *
  * @param payload the string to validate and convert
  */
-export declare function validateAndConvertAddress(payload: string): Address;
+export declare function validateAndConvertAddress(payload: string): Address | null;
 //# sourceMappingURL=utils.d.ts.map

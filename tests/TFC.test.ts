@@ -5,6 +5,7 @@ import {Address} from "../index";
 import BN from "bn.js";
 import TFC from "../src/TFC";
 import MockEthereum from "../src/MockEthereum";
+import Web3Core from "web3-core";
 
 describe("TFC", function () {
     this.timeout(5000);
@@ -20,10 +21,9 @@ describe("TFC", function () {
         // deploy smart contract
         // @ts-ignore
         let mockEth = new MockEthereum();
-        sdk = new SDK(mockEth.endpoint);
+        sdk = new SDK(mockEth.endpoint as unknown as Web3Core.provider);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
-        sdk.setDefaultAccount(admin);
         tfcAddress = await sdk.deployTFC(admin);
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
@@ -34,11 +34,17 @@ describe("TFC", function () {
     });
 
     afterEach(() => {
+        // @ts-ignore
         sdk = undefined;
+        // @ts-ignore
         admin = undefined;
+        // @ts-ignore
         tfcAddress = undefined;
+        // @ts-ignore
         tfc = undefined;
+        // @ts-ignore
         account1 = undefined;
+        // @ts-ignore
         accounts = undefined;
     })
 
@@ -78,7 +84,7 @@ describe("TFC", function () {
     });
 
     it('should be able to approve', async function () {
-        await tfc.approve(account1.address, new BN(100));
+        await tfc.approve(account1.address, new BN(100), admin);
         let allowance = await tfc.allowance(admin.address, account1.address);
         expect(allowance.toString()).to.be.equal(new BN(100).toString());
     });
@@ -94,7 +100,7 @@ describe("TFC", function () {
     it('should be able to transfer', async function () {
         let originalBalanceAdmin = await tfc.balanceOf(admin.address);
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.transfer(account1.address, new BN(50));
+        await tfc.transfer(account1.address, new BN(50), admin);
         let balance = await tfc.balanceOf(admin.address);
         expect(balance.toString()).to.be.equal(originalBalanceAdmin.sub(new BN(50)).toString())
         balance = await tfc.balanceOf(account1.address);
@@ -110,7 +116,7 @@ describe("TFC", function () {
 
     it('should be able to transferFrom', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.approve(account1.address, new BN(100));
+        await tfc.approve(account1.address, new BN(100), admin);
         await tfc.transferFrom(admin.address, account1.address, new BN(50), account1);
         let balance = await tfc.balanceOf(account1.address);
         expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new BN(50)).toString());
@@ -125,7 +131,7 @@ describe("TFC", function () {
 
     it('should be able to mint', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.mint(account1.address, new BN(100));
+        await tfc.mint(account1.address, new BN(100), admin);
         let balance = await tfc.balanceOf(account1.address);
         expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new BN(100)).toString());
     });
@@ -145,7 +151,7 @@ describe("TFC", function () {
 
     it('should be able to check if it can mint', async function () {
         expect(
-            await tfc.canMint()
+            await tfc.canMint(admin)
         ).to.be.true;
         expect(
             await tfc.canMint(account1)

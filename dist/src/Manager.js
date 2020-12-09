@@ -13,17 +13,16 @@ const bn_js_1 = __importDefault(require("bn.js"));
 class Manager extends Web3Wrapper_1.default {
     /**
      * Construct an TFCManager object representing the TFCManager smart contract,
-     * using web3 instance, address of contract and optionally a default account.
+     * using web3 instance, address of contract
      *
      * Usually this constructor should not be called.
      * Manager objects should be instantiated by {@link SDK}.
      *
      * @param web3
      * @param managerAddress
-     * @param defaultAccountPrivateKey
      */
-    constructor(web3, managerAddress, defaultAccountPrivateKey) {
-        super(web3, defaultAccountPrivateKey);
+    constructor(web3, managerAddress) {
+        super(web3);
         this._address = managerAddress;
         this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
         this._contract = new web3.eth.Contract(this._abi, managerAddress);
@@ -71,7 +70,7 @@ class Manager extends Web3Wrapper_1.default {
         let tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: claimer.defaultWeb3Account,
+                from: claimer.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);

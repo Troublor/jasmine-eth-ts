@@ -8,22 +8,20 @@ import Account from "./Account";
 /**
  * TFC Token contract representation.
  *
- * Objects of this class can optionally set a default account, which will be used to send Ethereum transactions.
  */
 export default class TFC extends Web3Wrapper {
     private readonly _address;
     private readonly _contract;
     private readonly _abi;
     /**
-     * Construct an TFC object using web3 instance, address of contract and optionally a default account.
+     * Construct an TFC object using web3 instance, address of contract
      * Usually this constructor should not be called.
      * TFC objects should be instantiated by {@link SDK}.
      *
      * @param web3
      * @param tfcAddress
-     * @param defaultAccountPrivateKey
      */
-    constructor(web3: Web3, tfcAddress: Address, defaultAccountPrivateKey?: string);
+    constructor(web3: Web3, tfcAddress: Address);
     /**
      * Get the web3.js contract object.
      */
@@ -67,17 +65,18 @@ export default class TFC extends Web3Wrapper {
     /**
      * Check if one account is allowed to mint new tokens.
      *
-     * @param sender (optional) the account to check. If omitted, use the default account.
+     * @param sender the account to check.
+     * @param sender the account to check.
      */
-    canMint(sender?: Account): Promise<boolean>;
+    canMint(sender: Account): Promise<boolean>;
     /**
      * Transfer money from sender to another account
      *
      * @param to Ethereum address of the recipient account
      * @param amount the amount of tokens to transfer
-     * @param sender (optional) the sender account of this transaction. If omitted, use the default account.
+     * @param sender the sender account of this transaction.
      */
-    transfer(to: Address, amount: BN, sender?: Account): Promise<void>;
+    transfer(to: Address, amount: BN, sender: Account): Promise<void>;
     /**
      * Transfer money from account {@param from} to account {@param to}.
      * This is useful when an agent transfers tokens as a delegate of a user.
@@ -86,27 +85,27 @@ export default class TFC extends Web3Wrapper {
      * @param from Ethereum address of the account whose tokens are transferred out
      * @param to Ethereum address of the account who receives the tokens
      * @param amount the amount to transfer
-     * @param sender (optional) transaction sender. If omitted, use the default account.
+     * @param sender transaction sender.
      * This sender is different from the {@param from}.
      */
-    transferFrom(from: Address, to: Address, amount: BN, sender?: Account): Promise<void>;
+    transferFrom(from: Address, to: Address, amount: BN, sender: Account): Promise<void>;
     /**
      * Approve one spender a certain amount of token to spend.
      *
      * @param spender Ethereum address of the spender
      * @param amount the amount of tokens to approve
-     * @param sender (optional) transaction sender, the owner of the token. If omitted, use the default account.
+     * @param sender transaction sender, the owner of the token.
      */
-    approve(spender: Address, amount: BN, sender?: Account): Promise<void>;
+    approve(spender: Address, amount: BN, sender: Account): Promise<void>;
     /**
      * Mint a certain amount of tokens from nowhere and put the tokens in one account.
      * The transaction sender must be the one of administrators listed by {@link TFC.adminAddresses}.
      *
      * @param to Ethereum address of the account to received the minted tokens
      * @param amount the amount of tokens to mint
-     * @param sender (optional) transaction sender. If omitted, use the default account.
+     * @param sender transaction sender.
      */
-    mint(to: Address, amount: BN, sender?: Account): Promise<void>;
+    mint(to: Address, amount: BN, sender: Account): Promise<void>;
     /**
      * Perform a one-to-many token transfer, tokens are transferred from the sender's account to the recipients.
      *
@@ -116,6 +115,6 @@ export default class TFC extends Web3Wrapper {
     one2manyTransfer(bundledTransfer: {
         recipient: Address;
         amount: BN;
-    }[], sender?: Account): Promise<void>;
+    }[], sender: Account): Promise<void>;
 }
 //# sourceMappingURL=TFC.d.ts.map

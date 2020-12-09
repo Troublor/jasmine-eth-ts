@@ -1,27 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class Web3Wrapper {
-    constructor(web3, privateKeyOrWeb3Account) {
+    constructor(web3) {
+        this._confirmationRequirement = 0;
         this._web3 = web3;
-        if (typeof privateKeyOrWeb3Account === "string") {
-            this._defaultWeb3Account = web3.eth.accounts.privateKeyToAccount(privateKeyOrWeb3Account);
-        }
-        else if (typeof privateKeyOrWeb3Account == "object") {
-            this._defaultWeb3Account = privateKeyOrWeb3Account;
-        }
-        else {
-            this._defaultWeb3Account = undefined;
-        }
-    }
-    setDefaultAccount(privateKey) {
-        this._defaultWeb3Account = this._web3.eth.accounts.privateKeyToAccount(privateKey);
-    }
-    get defaultAccountAddress() {
-        var _a;
-        return (_a = this._defaultWeb3Account) === null || _a === void 0 ? void 0 : _a.address;
-    }
-    get defaultWeb3Account() {
-        return this._defaultWeb3Account;
     }
     get web3() {
         return this._web3;
@@ -32,10 +14,7 @@ class Web3Wrapper {
     set confirmationRequirement(value) {
         this._confirmationRequirement = value;
     }
-    async signContractTransaction(transaction, to, options = {}) {
-        if (!options.from) {
-            options.from = this._defaultWeb3Account;
-        }
+    async signContractTransaction(transaction, to, options) {
         let nonce = await this._web3.eth.getTransactionCount(options.from.address);
         let gasLimit = options.gas ? options.gas : await transaction.estimateGas({ from: options.from.address });
         let gasPrice = await this._web3.eth.getGasPrice();
@@ -50,7 +29,7 @@ class Web3Wrapper {
         };
         return await options.from.signTransaction(rawTx);
     }
-    async signSimpleTransaction(transaction, to, options = {}) {
+    async signSimpleTransaction(transaction, to, options) {
         transaction.to = to;
         if (options.value) {
             transaction.value = options.value;
@@ -65,17 +44,14 @@ class Web3Wrapper {
             transaction.gas = await this.web3.eth.estimateGas(transaction);
         }
         if (!transaction.nonce) {
-            transaction.nonce = await this.web3.eth.getTransactionCount(transaction.from, "pending");
+            transaction.nonce = await this.web3.eth.getTransactionCount(options.from.address, "pending");
         }
         if (!transaction.chainId) {
             transaction.chainId = await this.web3.eth.getChainId();
         }
-        if (!options.from) {
-            options.from = this._defaultWeb3Account;
-        }
         return await options.from.signTransaction(transaction);
     }
-    async sendTransaction(transaction, to, options = {}) {
+    async sendTransaction(transaction, to, options) {
         return new Promise(async (resolve, reject) => {
             try {
                 let signedTx;
@@ -100,7 +76,7 @@ class Web3Wrapper {
                         resolved = true;
                     }
                 };
-                const receiptHandler = receipt => {
+                const receiptHandler = (receipt) => {
                     if (resolved) {
                         return;
                     }

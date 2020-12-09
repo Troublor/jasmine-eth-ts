@@ -5,8 +5,8 @@ import MockEthereum from "../src/MockEthereum";
 
 describe("Account", () => {
 
-    let web3: Web3;
-    let predefinedPrivateKeys;
+    let web3: Web3 | undefined;
+    let predefinedPrivateKeys: string[] | undefined;
 
     beforeEach(() => {
         let mockEth = new MockEthereum();
@@ -21,7 +21,7 @@ describe("Account", () => {
     })
 
     it('should be constructed correctly', function () {
-        let account = new Account(web3, predefinedPrivateKeys[0]);
-        expect(account.privateKey).to.be.equal(predefinedPrivateKeys[0]);
+        let account = new Account(web3 as Web3, (predefinedPrivateKeys as string[])[0]);
+        expect(account.privateKey).to.be.equal((predefinedPrivateKeys as string[])[0]);
     });
 })

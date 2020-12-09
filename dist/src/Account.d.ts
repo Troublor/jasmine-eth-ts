@@ -1,11 +1,12 @@
 import { Address } from "./types";
 import Web3Wrapper from "./Web3Wrapper";
 import Web3 from "web3";
-import TFC from "./TFC";
+import * as Web3Core from "web3-core";
 /**
  * The Ethereum account representation.
  */
 export default class Account extends Web3Wrapper {
+    readonly web3Account: Web3Core.Account;
     /**
      * Construct the account object using web3 instance and privateKey.
      * Usually this constructor should not be called.
@@ -23,11 +24,5 @@ export default class Account extends Web3Wrapper {
      * The private key of this account;
      */
     get privateKey(): string;
-    /**
-     * Get a {@link TFC} instance using this account as a default account.
-     *
-     * @param tfcAddress
-     */
-    getTFC(tfcAddress: Address): TFC;
 }
 //# sourceMappingURL=Account.d.ts.map

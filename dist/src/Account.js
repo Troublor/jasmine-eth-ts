@@ -4,7 +4,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
-const TFC_1 = __importDefault(require("./TFC"));
 /**
  * The Ethereum account representation.
  */
@@ -18,27 +17,20 @@ class Account extends Web3Wrapper_1.default {
      * @param privateKey
      */
     constructor(web3, privateKey) {
-        super(web3, privateKey);
+        super(web3);
+        this.web3Account = web3.eth.accounts.privateKeyToAccount(privateKey);
     }
     /**
      * The Ethereum address of this account.
      */
     get address() {
-        return this.defaultWeb3Account.address;
+        return this.web3Account.address;
     }
     /**
      * The private key of this account;
      */
     get privateKey() {
-        return this.defaultWeb3Account.privateKey;
-    }
-    /**
-     * Get a {@link TFC} instance using this account as a default account.
-     *
-     * @param tfcAddress
-     */
-    getTFC(tfcAddress) {
-        return new TFC_1.default(this.web3, tfcAddress, this.privateKey);
+        return this.web3Account.privateKey;
     }
 }
 exports.default = Account;

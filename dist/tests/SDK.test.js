@@ -17,23 +17,17 @@ describe("SDK", () => {
         predefinedPrivateKeys = mockEth.predefinedPrivateKeys;
     });
     afterEach(() => {
+        // @ts-ignore
         sdk = undefined;
+        // @ts-ignore
         predefinedPrivateKeys = undefined;
     });
     it('should be constructed correctly', function () {
-        chai_1.expect(sdk.defaultAccountAddress).to.be.undefined;
+        chai_1.expect(sdk).not.to.be.undefined;
     });
     it('should be able to create account', function () {
         let account = sdk.createAccount();
         chai_1.expect(sdk.web3.eth.accounts.privateKeyToAccount(account.privateKey).address).to.be.equal(account.address);
-    });
-    it('should be able to set default account', function () {
-        let account = sdk.createAccount();
-        chai_1.expect(sdk.defaultAccountAddress).to.be.undefined;
-        sdk.setDefaultAccount(account);
-        chai_1.expect(sdk.defaultAccountAddress).to.be.equal(account.address);
-        sdk.setDefaultAccount(account.privateKey);
-        chai_1.expect(sdk.defaultAccountAddress).to.be.equal(account.address);
     });
     it('should retrieve account correctly', function () {
         let account = sdk.createAccount();
@@ -51,8 +45,7 @@ describe("SDK", () => {
     });
     it('should be able to deploy TFCManager', async function () {
         let admin = sdk.retrieveAccount(predefinedPrivateKeys[0]);
-        sdk.setDefaultAccount(admin);
-        let managerAddress = await sdk.deployManager();
+        let managerAddress = await sdk.deployManager(admin);
         let code = await sdk.web3.eth.getCode(managerAddress);
         chai_1.expect(code).to.not.be.undefined;
     });

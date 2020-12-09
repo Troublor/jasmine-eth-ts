@@ -25,25 +25,6 @@ class SDK extends Web3Wrapper_1.default {
         super(new web3_1.default(ethereumEndpoint));
     }
     /**
-     * Set the default account of this SDK.
-     *
-     * @param privateKeyOrAccount private key string or an object of {@link Account}
-     */
-    setDefaultAccount(privateKeyOrAccount) {
-        let privateKey;
-        switch (typeof privateKeyOrAccount) {
-            case "string":
-                privateKey = privateKeyOrAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrAccount.privateKey;
-                break;
-            default:
-                privateKey = undefined;
-        }
-        super.setDefaultAccount(privateKey);
-    }
-    /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *
      * @param sender the transaction sender who creates the contract
@@ -57,11 +38,11 @@ class SDK extends Web3Wrapper_1.default {
                 data: data.toString().trim(),
                 arguments: [
                     sender.address,
-                    sender.address,
+                    sender.address
                 ],
             });
             this.sendTransaction(tx, undefined, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account,
                 gas: 6000000
             })
                 .then(receipt => {
@@ -85,7 +66,7 @@ class SDK extends Web3Wrapper_1.default {
                 data: data.toString().trim(),
             });
             this.sendTransaction(tx, undefined, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account,
                 gas: 6000000
             })
                 .then(async (receipt) => {
@@ -98,53 +79,19 @@ class SDK extends Web3Wrapper_1.default {
      * Get the {@link TFC} instance.
      *
      * @param tfcAddress the address of the smart contract of {@link TFC}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    getTFC(tfcAddress, privateKeyOrDefaultAccount) {
-        let privateKey;
-        switch (typeof privateKeyOrDefaultAccount) {
-            case "string":
-                privateKey = privateKeyOrDefaultAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrDefaultAccount.privateKey;
-                break;
-            default:
-                if (this.defaultWeb3Account) {
-                    privateKey = this.defaultWeb3Account.privateKey;
-                }
-                else {
-                    privateKey = undefined;
-                }
-        }
-        return new TFC_1.default(this.web3, tfcAddress, privateKey);
+    getTFC(tfcAddress) {
+        return new TFC_1.default(this.web3, tfcAddress);
     }
     /**
      *  Get the {@link Manager} instance.
      *
      * @param managerAddress the address of the smart contract of {@link Manager}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    getManager(managerAddress, privateKeyOrDefaultAccount) {
-        let privateKey;
-        switch (typeof privateKeyOrDefaultAccount) {
-            case "string":
-                privateKey = privateKeyOrDefaultAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrDefaultAccount.privateKey;
-                break;
-            default:
-                if (this.defaultWeb3Account) {
-                    privateKey = this.defaultWeb3Account.privateKey;
-                }
-                else {
-                    privateKey = undefined;
-                }
-        }
-        return new Manager_1.default(this.web3, managerAddress, privateKey);
+    getManager(managerAddress) {
+        return new Manager_1.default(this.web3, managerAddress);
     }
     /**
      * Retrieve an account using private key.
@@ -190,26 +137,11 @@ class SDK extends Web3Wrapper_1.default {
             const tx = {
                 to: to,
                 value: amount,
-                from: sender ? sender.address : this.defaultWeb3Account.address,
+                from: sender.address,
             };
-            this.sendTransaction(tx, to, { from: sender.defaultWeb3Account }).then(() => {
+            this.sendTransaction(tx, to, { from: sender.web3Account }).then(() => {
                 resolve();
             }).catch(reject);
-            // tx['gas'] = await this.web3.eth.estimateGas(tx);
-            // tx['gasPrice'] = await this.web3.eth.getGasPrice();
-            // const signedTx = await sender.defaultWeb3Account.signTransaction(tx);
-            // this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-            //     .on("receipt", () => {
-            //         if (!this._confirmationRequirement) {
-            //             resolve();
-            //         }
-            //     })
-            //     .on("confirmation", (confNumber) => {
-            //         if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-            //             resolve();
-            //         }
-            //     })
-            //     .on("error", reject);
         });
     }
     /**

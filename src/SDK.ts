@@ -8,6 +8,8 @@ import fs from "fs";
 import path from "path";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
+import {ContractSendMethod} from "web3-eth-contract";
+import {TransactionObject} from "./contracts/types";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -24,32 +26,12 @@ export default class SDK extends Web3Wrapper {
     }
 
     /**
-     * Set the default account of this SDK.
-     *
-     * @param privateKeyOrAccount private key string or an object of {@link Account}
-     */
-    public setDefaultAccount(privateKeyOrAccount: string | Account) {
-        let privateKey;
-        switch (typeof privateKeyOrAccount) {
-            case "string":
-                privateKey = privateKeyOrAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrAccount.privateKey;
-                break;
-            default:
-                privateKey = undefined;
-
-        }
-        super.setDefaultAccount(privateKey);
-    }
-
-    /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *
      * @param sender the transaction sender who creates the contract
      */
-    public deployTFC(sender?: Account): Promise<Address> {
+    public deployTFC(sender: Account): Promise<Address> {
+
         return new Promise<Address>(async (resolve, reject) => {
             let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
             let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.bin"));
@@ -58,15 +40,15 @@ export default class SDK extends Web3Wrapper {
                 data: data.toString().trim(),
                 arguments: [
                     sender.address,
-                    sender.address,
+                    sender.address
                 ],
             })
-            this.sendTransaction(tx, undefined, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            this.sendTransaction(tx as (ContractSendMethod | (TransactionObject<any>) | Web3Core.TransactionConfig), undefined, {
+                from: sender.web3Account,
                 gas: 6000000
             })
                 .then(receipt => {
-                    resolve(receipt.contractAddress)
+                    resolve(receipt.contractAddress as Address)
                 })
                 .catch(reject);
         });
@@ -78,7 +60,7 @@ export default class SDK extends Web3Wrapper {
      *
      * @param sender the account used to deploy
      */
-    public deployManager(sender?: Account): Promise<Address> {
+    public deployManager(sender: Account): Promise<Address> {
         return new Promise<Address>(async (resolve, reject) => {
             let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
             let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.bin"));
@@ -86,12 +68,12 @@ export default class SDK extends Web3Wrapper {
             let tx = contract.deploy({
                 data: data.toString().trim(),
             })
-            this.sendTransaction(tx, undefined, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+            this.sendTransaction(tx as (ContractSendMethod | (TransactionObject<any>) | Web3Core.TransactionConfig), undefined, {
+                from: sender.web3Account,
                 gas: 6000000
             })
                 .then(async receipt => {
-                    resolve(receipt.contractAddress)
+                    resolve(receipt.contractAddress as Address)
                 })
                 .catch(reject);
         });
@@ -101,54 +83,20 @@ export default class SDK extends Web3Wrapper {
      * Get the {@link TFC} instance.
      *
      * @param tfcAddress the address of the smart contract of {@link TFC}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    public getTFC(tfcAddress: Address, privateKeyOrDefaultAccount?: string | Account): TFC {
-        let privateKey;
-        switch (typeof privateKeyOrDefaultAccount) {
-            case "string":
-                privateKey = privateKeyOrDefaultAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrDefaultAccount.privateKey;
-                break;
-            default:
-                if (this.defaultWeb3Account) {
-                    privateKey = this.defaultWeb3Account.privateKey;
-                } else {
-                    privateKey = undefined;
-                }
-
-        }
-        return new TFC(this.web3, tfcAddress, privateKey);
+    public getTFC(tfcAddress: Address): TFC {
+        return new TFC(this.web3, tfcAddress);
     }
 
     /**
      *  Get the {@link Manager} instance.
      *
      * @param managerAddress the address of the smart contract of {@link Manager}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    public getManager(managerAddress: Address, privateKeyOrDefaultAccount?: string | Account): Manager {
-        let privateKey;
-        switch (typeof privateKeyOrDefaultAccount) {
-            case "string":
-                privateKey = privateKeyOrDefaultAccount;
-                break;
-            case "object":
-                privateKey = privateKeyOrDefaultAccount.privateKey;
-                break;
-            default:
-                if (this.defaultWeb3Account) {
-                    privateKey = this.defaultWeb3Account.privateKey;
-                } else {
-                    privateKey = undefined;
-                }
-
-        }
-        return new Manager(this.web3, managerAddress, privateKey);
+    public getManager(managerAddress: Address): Manager {
+        return new Manager(this.web3, managerAddress);
     }
 
     /**
@@ -193,33 +141,17 @@ export default class SDK extends Web3Wrapper {
      * @param amount the amount of ether to transfer. (in the unit of wei)
      * @param sender sender account.
      */
-    public transfer(to: Address, amount: BN, sender?: Account): Promise<void> {
+    public transfer(to: Address, amount: BN, sender: Account): Promise<void> {
         return new Promise<void>(async (resolve, reject) => {
             const tx = {
                 to: to,
                 value: amount,
-                from: sender ? sender.address : this.defaultWeb3Account.address,
+                from: sender.address,
                 // nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
             };
-            this.sendTransaction(tx, to, {from: sender.defaultWeb3Account}).then(() => {
+            this.sendTransaction(tx, to, {from: sender.web3Account}).then(() => {
                 resolve()
             }).catch(reject);
-
-            // tx['gas'] = await this.web3.eth.estimateGas(tx);
-            // tx['gasPrice'] = await this.web3.eth.getGasPrice();
-            // const signedTx = await sender.defaultWeb3Account.signTransaction(tx);
-            // this.web3.eth.sendSignedTransaction(signedTx.rawTransaction)
-            //     .on("receipt", () => {
-            //         if (!this._confirmationRequirement) {
-            //             resolve();
-            //         }
-            //     })
-            //     .on("confirmation", (confNumber) => {
-            //         if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
-            //             resolve();
-            //         }
-            //     })
-            //     .on("error", reject);
         });
     }
 

@@ -12,16 +12,15 @@ export default class Manager extends Web3Wrapper {
     private readonly _abi;
     /**
      * Construct an TFCManager object representing the TFCManager smart contract,
-     * using web3 instance, address of contract and optionally a default account.
+     * using web3 instance, address of contract
      *
      * Usually this constructor should not be called.
      * Manager objects should be instantiated by {@link SDK}.
      *
      * @param web3
      * @param managerAddress
-     * @param defaultAccountPrivateKey
      */
-    constructor(web3: Web3, managerAddress: Address, defaultAccountPrivateKey?: string);
+    constructor(web3: Web3, managerAddress: Address);
     /**
      * Get the address of the TFCToken ERC20 contract, which are created/managed by the manager.
      */

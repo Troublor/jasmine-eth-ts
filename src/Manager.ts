@@ -18,20 +18,19 @@ export default class Manager extends Web3Wrapper {
 
     /**
      * Construct an TFCManager object representing the TFCManager smart contract,
-     * using web3 instance, address of contract and optionally a default account.
+     * using web3 instance, address of contract
      *
      * Usually this constructor should not be called.
      * Manager objects should be instantiated by {@link SDK}.
      *
      * @param web3
      * @param managerAddress
-     * @param defaultAccountPrivateKey
      */
-    constructor(web3: Web3, managerAddress: Address, defaultAccountPrivateKey?: string) {
-        super(web3, defaultAccountPrivateKey);
+    constructor(web3: Web3, managerAddress: Address) {
+        super(web3);
         this._address = managerAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
-        this._contract = new web3.eth.Contract(this._abi, managerAddress);
+        this._contract = new web3.eth.Contract(this._abi, managerAddress) as unknown as TFCManager;
     }
 
     /**
@@ -81,7 +80,7 @@ export default class Manager extends Web3Wrapper {
         let tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: claimer.defaultWeb3Account,
+                from: claimer.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -97,7 +96,7 @@ export default class Manager extends Web3Wrapper {
      * @param signer the account who has the privilege to authorize TFC claim
      */
     public signTFCClaim(recipient: Address, amount: BN, nonce: BN, signer: Account): string {
-        const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address);
+        const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address) as string;
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
     }
 };

@@ -7,7 +7,8 @@ const chai_1 = require("chai");
 const SDK_1 = __importDefault(require("../src/SDK"));
 const bn_js_1 = __importDefault(require("bn.js"));
 const MockEthereum_1 = __importDefault(require("../src/MockEthereum"));
-describe("TFC", () => {
+describe("TFC", function () {
+    this.timeout(5000);
     let sdk;
     let admin;
     let tfcAddress;
@@ -22,21 +23,26 @@ describe("TFC", () => {
         sdk = new SDK_1.default(mockEth.endpoint);
         accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
         admin = accounts[0];
-        sdk.setDefaultAccount(admin);
         tfcAddress = await sdk.deployTFC(admin);
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
         // make initial supply
-        for (const acc of accounts) {
+        for (const acc of accounts.slice(0, 20)) {
             await tfc.mint(acc.address, new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')), admin);
         }
     });
     afterEach(() => {
+        // @ts-ignore
         sdk = undefined;
+        // @ts-ignore
         admin = undefined;
+        // @ts-ignore
         tfcAddress = undefined;
+        // @ts-ignore
         tfc = undefined;
+        // @ts-ignore
         account1 = undefined;
+        // @ts-ignore
         accounts = undefined;
     });
     it('should be constructed correctly', async function () {
@@ -68,7 +74,7 @@ describe("TFC", () => {
         chai_1.expect(balance.toString()).to.be.equal(initialSupply.div(new bn_js_1.default(20)).toString());
     });
     it('should be able to approve', async function () {
-        await tfc.approve(account1.address, new bn_js_1.default(100));
+        await tfc.approve(account1.address, new bn_js_1.default(100), admin);
         let allowance = await tfc.allowance(admin.address, account1.address);
         chai_1.expect(allowance.toString()).to.be.equal(new bn_js_1.default(100).toString());
     });
@@ -82,7 +88,7 @@ describe("TFC", () => {
     it('should be able to transfer', async function () {
         let originalBalanceAdmin = await tfc.balanceOf(admin.address);
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.transfer(account1.address, new bn_js_1.default(50));
+        await tfc.transfer(account1.address, new bn_js_1.default(50), admin);
         let balance = await tfc.balanceOf(admin.address);
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAdmin.sub(new bn_js_1.default(50)).toString());
         balance = await tfc.balanceOf(account1.address);
@@ -96,7 +102,7 @@ describe("TFC", () => {
     });
     it('should be able to transferFrom', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.approve(account1.address, new bn_js_1.default(100));
+        await tfc.approve(account1.address, new bn_js_1.default(100), admin);
         await tfc.transferFrom(admin.address, account1.address, new bn_js_1.default(50), account1);
         let balance = await tfc.balanceOf(account1.address);
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(50)).toString());
@@ -109,7 +115,7 @@ describe("TFC", () => {
     });
     it('should be able to mint', async function () {
         let originalBalanceAccount1 = await tfc.balanceOf(admin.address);
-        await tfc.mint(account1.address, new bn_js_1.default(100));
+        await tfc.mint(account1.address, new bn_js_1.default(100), admin);
         let balance = await tfc.balanceOf(account1.address);
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(100)).toString());
     });
@@ -125,7 +131,7 @@ describe("TFC", () => {
         chai_1.expect(admins[0]).to.be.equal(admin.address);
     });
     it('should be able to check if it can mint', async function () {
-        chai_1.expect(await tfc.canMint()).to.be.true;
+        chai_1.expect(await tfc.canMint(admin)).to.be.true;
         chai_1.expect(await tfc.canMint(account1)).to.be.false;
     });
     it('should be able to do one-to-many transfer', async function () {

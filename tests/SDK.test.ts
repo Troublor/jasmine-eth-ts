@@ -6,7 +6,7 @@ import MockEthereum from "../src/MockEthereum";
 describe("SDK", () => {
 
     let sdk: SDK;
-    let predefinedPrivateKeys;
+    let predefinedPrivateKeys : string[];
 
     beforeEach(() => {
         let mockEth = new MockEthereum();
@@ -16,26 +16,19 @@ describe("SDK", () => {
     });
 
     afterEach(() => {
+        // @ts-ignore
         sdk = undefined;
+        // @ts-ignore
         predefinedPrivateKeys = undefined;
     })
 
     it('should be constructed correctly', function () {
-        expect(sdk.defaultAccountAddress).to.be.undefined;
+        expect(sdk).not.to.be.undefined;
     });
 
     it('should be able to create account', function () {
         let account = sdk.createAccount();
         expect(sdk.web3.eth.accounts.privateKeyToAccount(account.privateKey).address).to.be.equal(account.address);
-    });
-
-    it('should be able to set default account', function () {
-        let account = sdk.createAccount();
-        expect(sdk.defaultAccountAddress).to.be.undefined;
-        sdk.setDefaultAccount(account);
-        expect(sdk.defaultAccountAddress).to.be.equal(account.address);
-        sdk.setDefaultAccount(account.privateKey);
-        expect(sdk.defaultAccountAddress).to.be.equal(account.address);
     });
 
     it('should retrieve account correctly', function () {
@@ -56,8 +49,7 @@ describe("SDK", () => {
 
     it('should be able to deploy TFCManager', async function () {
         let admin = sdk.retrieveAccount(predefinedPrivateKeys[0]);
-        sdk.setDefaultAccount(admin);
-        let managerAddress = await sdk.deployManager();
+        let managerAddress = await sdk.deployManager(admin);
         let code = await sdk.web3.eth.getCode(managerAddress);
         expect(code).to.not.be.undefined;
     });

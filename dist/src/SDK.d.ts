@@ -17,40 +17,32 @@ export default class SDK extends Web3Wrapper {
      */
     constructor(ethereumEndpoint: string | Web3Core.provider);
     /**
-     * Set the default account of this SDK.
-     *
-     * @param privateKeyOrAccount private key string or an object of {@link Account}
-     */
-    setDefaultAccount(privateKeyOrAccount: string | Account): void;
-    /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *
      * @param sender the transaction sender who creates the contract
      */
-    deployTFC(sender?: Account): Promise<Address>;
+    deployTFC(sender: Account): Promise<Address>;
     /**
      * Deploy TFCManager contract on the underling blockchain.
      * The TFCManager contract will automatically deploy a TFC ERC20 contract and provides TFC claim service for users.
      *
      * @param sender the account used to deploy
      */
-    deployManager(sender?: Account): Promise<Address>;
+    deployManager(sender: Account): Promise<Address>;
     /**
      * Get the {@link TFC} instance.
      *
      * @param tfcAddress the address of the smart contract of {@link TFC}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    getTFC(tfcAddress: Address, privateKeyOrDefaultAccount?: string | Account): TFC;
+    getTFC(tfcAddress: Address): TFC;
     /**
      *  Get the {@link Manager} instance.
      *
      * @param managerAddress the address of the smart contract of {@link Manager}
-     * @param privateKeyOrDefaultAccount the private key or account object of the default account
      * used to send transactions in the TFC instance.
      */
-    getManager(managerAddress: Address, privateKeyOrDefaultAccount?: string | Account): Manager;
+    getManager(managerAddress: Address): Manager;
     /**
      * Retrieve an account using private key.
      *
@@ -77,7 +69,7 @@ export default class SDK extends Web3Wrapper {
      * @param amount the amount of ether to transfer. (in the unit of wei)
      * @param sender sender account.
      */
-    transfer(to: Address, amount: BN, sender?: Account): Promise<void>;
+    transfer(to: Address, amount: BN, sender: Account): Promise<void>;
     /**
      * Convert wei unit to ether unit
      *

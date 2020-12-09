@@ -10,20 +10,18 @@ const bn_js_1 = __importDefault(require("bn.js"));
 /**
  * TFC Token contract representation.
  *
- * Objects of this class can optionally set a default account, which will be used to send Ethereum transactions.
  */
 class TFC extends Web3Wrapper_1.default {
     /**
-     * Construct an TFC object using web3 instance, address of contract and optionally a default account.
+     * Construct an TFC object using web3 instance, address of contract
      * Usually this constructor should not be called.
      * TFC objects should be instantiated by {@link SDK}.
      *
      * @param web3
      * @param tfcAddress
-     * @param defaultAccountPrivateKey
      */
-    constructor(web3, tfcAddress, defaultAccountPrivateKey) {
-        super(web3, defaultAccountPrivateKey);
+    constructor(web3, tfcAddress) {
+        super(web3);
         this._address = tfcAddress;
         this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
         this._contract = new web3.eth.Contract(this._abi, tfcAddress);
@@ -119,10 +117,11 @@ class TFC extends Web3Wrapper_1.default {
     /**
      * Check if one account is allowed to mint new tokens.
      *
-     * @param sender (optional) the account to check. If omitted, use the default account.
+     * @param sender the account to check.
+     * @param sender the account to check.
      */
     async canMint(sender) {
-        let address = sender ? sender.address : this.defaultAccountAddress;
+        let address = sender.address;
         let minterRole = await this._contract.methods.MINTER_ROLE().call();
         return await this._contract.methods.hasRole(minterRole, address).call();
     }
@@ -131,13 +130,13 @@ class TFC extends Web3Wrapper_1.default {
      *
      * @param to Ethereum address of the recipient account
      * @param amount the amount of tokens to transfer
-     * @param sender (optional) the sender account of this transaction. If omitted, use the default account.
+     * @param sender the sender account of this transaction.
      */
     async transfer(to, amount, sender) {
         let tx = this._contract.methods.transfer(to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -151,14 +150,14 @@ class TFC extends Web3Wrapper_1.default {
      * @param from Ethereum address of the account whose tokens are transferred out
      * @param to Ethereum address of the account who receives the tokens
      * @param amount the amount to transfer
-     * @param sender (optional) transaction sender. If omitted, use the default account.
+     * @param sender transaction sender.
      * This sender is different from the {@param from}.
      */
     async transferFrom(from, to, amount, sender) {
         let tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -169,13 +168,13 @@ class TFC extends Web3Wrapper_1.default {
      *
      * @param spender Ethereum address of the spender
      * @param amount the amount of tokens to approve
-     * @param sender (optional) transaction sender, the owner of the token. If omitted, use the default account.
+     * @param sender transaction sender, the owner of the token.
      */
     async approve(spender, amount, sender) {
         let tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -187,13 +186,13 @@ class TFC extends Web3Wrapper_1.default {
      *
      * @param to Ethereum address of the account to received the minted tokens
      * @param amount the amount of tokens to mint
-     * @param sender (optional) transaction sender. If omitted, use the default account.
+     * @param sender transaction sender.
      */
     async mint(to, amount, sender) {
         let tx = this._contract.methods.mint(to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -215,7 +214,7 @@ class TFC extends Web3Wrapper_1.default {
         let tx = this._contract.methods.one2manyTransfer(recipients, amounts.map(a => a.toString()));
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender ? sender.defaultWeb3Account : this.defaultWeb3Account,
+                from: sender.web3Account
             })
                 .then(() => resolve())
                 .catch(reject);
