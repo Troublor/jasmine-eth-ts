@@ -3,9 +3,9 @@ import Web3Utils from "web3-utils";
 import Web3 from "web3";
 import fs from "fs";
 import path from "path";
-import {TfcManager } from "./contracts/TFCManager";
+import {TfcManager} from "./contracts/TFCManager";
 import BN from "bn.js";
-import { Address } from "./types";
+import {Address} from "./types";
 import Account from "./Account";
 
 /**
@@ -98,5 +98,17 @@ export default class Manager extends Web3Wrapper {
     public signTFCClaim(recipient: Address, amount: BN, nonce: BN, signer: Account): string {
         const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address) as string;
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
+    }
+
+    /**
+     * Check whether TFC Manager has been deployed on current network
+     */
+    public async deployed(): Promise<boolean> {
+        try {
+            await this.tfcAddress();
+            return true;
+        } catch (e) {
+            return false;
+        }
     }
 }

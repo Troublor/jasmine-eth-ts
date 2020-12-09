@@ -88,6 +88,18 @@ class Manager extends Web3Wrapper_1.default {
         const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address);
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
     }
+    /**
+     * Check whether TFC Manager has been deployed on current network
+     */
+    async deployed() {
+        try {
+            await this.tfcAddress();
+            return true;
+        }
+        catch (e) {
+            return false;
+        }
+    }
 }
 exports.default = Manager;
 //# sourceMappingURL=Manager.js.map

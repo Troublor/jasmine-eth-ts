@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import TFC from "./TFC";
-import { Address } from "./types";
+import {Address} from "./types";
 import Account from "./Account";
 import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
@@ -8,8 +8,8 @@ import fs from "fs";
 import path from "path";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
-import { ContractSendMethod } from "web3-eth-contract";
-import { PayableTransactionObject, NonPayableTransactionObject } from "./contracts/types";
+import {ContractSendMethod} from "web3-eth-contract";
+import {PayableTransactionObject, NonPayableTransactionObject} from "./contracts/types";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -119,7 +119,7 @@ export default class SDK extends Web3Wrapper {
      * Be sure to appropriately save the private key of the account to be able to retrieve next time.
      */
     public createAccount(): Account {
-        const { privateKey } = this.web3.eth.accounts.create();
+        const {privateKey} = this.web3.eth.accounts.create();
         return new Account(this.web3, privateKey);
     }
 
@@ -156,7 +156,7 @@ export default class SDK extends Web3Wrapper {
                 from: sender.address,
                 // nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
             };
-            this.sendTransaction(tx, to, { from: sender.web3Account })
+            this.sendTransaction(tx, to, {from: sender.web3Account})
                 .then(() => {
                     resolve();
                 })

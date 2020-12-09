@@ -116,5 +116,9 @@ export default class TFC extends Web3Wrapper {
         recipient: Address;
         amount: BN;
     }[], sender: Account): Promise<void>;
+    /**
+     * Check whether TFC ERC20 has been deployed on current network
+     */
+    deployed(): Promise<boolean>;
 }
 //# sourceMappingURL=TFC.d.ts.map

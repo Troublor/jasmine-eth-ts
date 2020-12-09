@@ -1,5 +1,5 @@
-import { Address } from "./types";
-import { TfcToken } from "./contracts/TFCToken";
+import {Address} from "./types";
+import {TfcToken} from "./contracts/TFCToken";
 import Web3 from "web3";
 import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";
@@ -253,5 +253,17 @@ export default class TFC extends Web3Wrapper {
                 .then(() => resolve())
                 .catch(reject);
         });
+    }
+
+    /**
+     * Check whether TFC ERC20 has been deployed on current network
+     */
+    public async deployed(): Promise<boolean> {
+        try {
+            const symbol = await this.symbol();
+            return symbol === "TFC";
+        } catch (e) {
+            return false;
+        }
     }
 }

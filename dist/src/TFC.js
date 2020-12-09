@@ -228,6 +228,18 @@ class TFC extends Web3Wrapper_1.default {
                 .catch(reject);
         });
     }
+    /**
+     * Check whether TFC ERC20 has been deployed on current network
+     */
+    async deployed() {
+        try {
+            const symbol = await this.symbol();
+            return symbol === "TFC";
+        }
+        catch (e) {
+            return false;
+        }
+    }
 }
 exports.default = TFC;
 //# sourceMappingURL=TFC.js.map

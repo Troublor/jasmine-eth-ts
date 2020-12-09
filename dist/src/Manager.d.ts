@@ -57,5 +57,9 @@ export default class Manager extends Web3Wrapper {
      * @param signer the account who has the privilege to authorize TFC claim
      */
     signTFCClaim(recipient: Address, amount: BN, nonce: BN, signer: Account): string;
+    /**
+     * Check whether TFC Manager has been deployed on current network
+     */
+    deployed(): Promise<boolean>;
 }
 //# sourceMappingURL=Manager.d.ts.map

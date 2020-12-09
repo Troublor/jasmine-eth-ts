@@ -11,7 +11,7 @@ class MockEthereum {
     /**
      * Construct a mock Ethereum environment, where each of the predefined privateKeys are initially faucet 100 Ethers
      */
-    constructor() {
+    constructor(options) {
         /**
          * Predefined account privateKeys
          */
@@ -53,8 +53,25 @@ class MockEthereum {
                 secretKey: key,
             };
         });
-        this.endpoint = ganache_core_1.default.provider({
+        this.server = ganache_core_1.default.server(Object.assign(options, {
             accounts: accounts,
+        }));
+        this.endpoint = this.server.provider;
+    }
+    async listenOn(host, port) {
+        return new Promise(resolve => {
+            this.server.listen(port, host);
+            resolve();
+        });
+    }
+    async stopListen() {
+        return new Promise((resolve, reject) => {
+            this.server.close(err => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            });
         });
     }
 }

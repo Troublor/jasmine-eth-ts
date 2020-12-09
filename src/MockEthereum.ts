@@ -1,5 +1,5 @@
 import ganacheCore from "ganache-core";
-import Account from "./Account";
+import Web3Core from "web3-core";
 
 /**
  * A Mock Ethereum network, based on ganache-core, which provides predefined accounts (with 100 ethers each) and an endpoint for SDK.
@@ -41,23 +41,44 @@ export default class MockEthereum {
         "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c37c3",
     ];
 
+    private readonly server: ganacheCore.Server;
+
     /**
      * The endpoint of mock Ethereum for use in SKD
      */
-    public readonly endpoint;
+    public readonly endpoint: Web3Core.provider;
 
     /**
      * Construct a mock Ethereum environment, where each of the predefined privateKeys are initially faucet 100 Ethers
      */
-    constructor() {
+    constructor(options?:ganacheCore.IServerOptions) {
         const accounts = this.predefinedPrivateKeys.map((key) => {
             return {
                 balance: "0x56BC75E2D63100000",
                 secretKey: key,
             };
         });
-        this.endpoint = ganacheCore.provider({
+        this.server = ganacheCore.server(Object.assign(options, {
             accounts: accounts,
+        }))
+        this.endpoint = this.server.provider as unknown as Web3Core.provider;
+    }
+
+    public async listenOn(host: string, port: number): Promise<void> {
+        return new Promise(resolve => {
+            this.server.listen(port, host);
+            resolve();
+        });
+    }
+
+    public async stopListen(): Promise<void> {
+        return new Promise((resolve, reject) => {
+            this.server.close(err => {
+                if (err) {
+                    reject(err);
+                }
+                resolve();
+            })
         });
     }
 }
