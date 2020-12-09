@@ -8,7 +8,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.test.ts",
-    "build": "tsc",
+    "build": "tsc && cp src/contracts/* dist/src/contracts",
     "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library index.ts",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --fix"
   },

@@ -2,30 +2,62 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions } from "web3-eth-contract";
+import { ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract
+} from "./types";
 
 interface EventOptions {
-    filter?: object;
-    fromBlock?: BlockType;
-    topics?: string[];
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
 }
 
-export class TFCManager extends Contract {
-    constructor(jsonInterface: any[], address?: string, options?: ContractOptions);
-    clone(): TFCManager;
-    methods: {
-        claimTFC(amount: number | string, nonce: number | string, sig: string | number[]): TransactionObject<void>;
+export type ClaimTFC = ContractEventLog<{
+  recipient: string;
+  amount: string;
+  nonce: string;
+  sig: string;
+  0: string;
+  1: string;
+  2: string;
+  3: string;
+}>;
 
-        signer(): TransactionObject<string>;
+export interface TfcManager extends BaseContract {
+  constructor(
+    jsonInterface: any[],
+    address?: string,
+    options?: ContractOptions
+  ): TfcManager;
+  clone(): TfcManager;
+  methods: {
+    claimTFC(
+      amount: number | string,
+      nonce: number | string,
+      sig: string | number[]
+    ): NonPayableTransactionObject<void>;
 
-        tfcToken(): TransactionObject<string>;
+    signer(): NonPayableTransactionObject<string>;
 
-        usedNonces(arg0: number | string): TransactionObject<boolean>;
-    };
-    events: {
-        allEvents: (options?: EventOptions, cb?: Callback<EventLog>) => EventEmitter;
-    };
+    tfcToken(): NonPayableTransactionObject<string>;
+
+    usedNonces(arg0: number | string): NonPayableTransactionObject<boolean>;
+  };
+  events: {
+    ClaimTFC(cb?: Callback<ClaimTFC>): EventEmitter;
+    ClaimTFC(options?: EventOptions, cb?: Callback<ClaimTFC>): EventEmitter;
+
+    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
+  };
+
+  once(event: "ClaimTFC", cb: Callback<ClaimTFC>): void;
+  once(event: "ClaimTFC", options: EventOptions, cb: Callback<ClaimTFC>): void;
 }

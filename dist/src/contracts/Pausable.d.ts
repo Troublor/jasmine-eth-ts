@@ -2,26 +2,56 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions } from "web3-eth-contract";
+import { ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract
+} from "./types";
 
 interface EventOptions {
-    filter?: object;
-    fromBlock?: BlockType;
-    topics?: string[];
+  filter?: object;
+  fromBlock?: BlockType;
+  topics?: string[];
 }
 
-export class Pausable extends Contract {
-    constructor(jsonInterface: any[], address?: string, options?: ContractOptions);
-    clone(): Pausable;
-    methods: {
-        paused(): TransactionObject<boolean>;
-    };
-    events: {
-        Paused: ContractEvent<string>;
-        Unpaused: ContractEvent<string>;
-        allEvents: (options?: EventOptions, cb?: Callback<EventLog>) => EventEmitter;
-    };
+export type Paused = ContractEventLog<{
+  account: string;
+  0: string;
+}>;
+export type Unpaused = ContractEventLog<{
+  account: string;
+  0: string;
+}>;
+
+export interface Pausable extends BaseContract {
+  constructor(
+    jsonInterface: any[],
+    address?: string,
+    options?: ContractOptions
+  ): Pausable;
+  clone(): Pausable;
+  methods: {
+    paused(): NonPayableTransactionObject<boolean>;
+  };
+  events: {
+    Paused(cb?: Callback<Paused>): EventEmitter;
+    Paused(options?: EventOptions, cb?: Callback<Paused>): EventEmitter;
+
+    Unpaused(cb?: Callback<Unpaused>): EventEmitter;
+    Unpaused(options?: EventOptions, cb?: Callback<Unpaused>): EventEmitter;
+
+    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
+  };
+
+  once(event: "Paused", cb: Callback<Paused>): void;
+  once(event: "Paused", options: EventOptions, cb: Callback<Paused>): void;
+
+  once(event: "Unpaused", cb: Callback<Unpaused>): void;
+  once(event: "Unpaused", options: EventOptions, cb: Callback<Unpaused>): void;
 }
