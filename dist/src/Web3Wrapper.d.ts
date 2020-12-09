@@ -11,20 +11,32 @@ export default abstract class Web3Wrapper {
     get web3(): Web3;
     get confirmationRequirement(): number;
     set confirmationRequirement(value: number);
-    protected signContractTransaction(transaction: TransactionObject<any> | ContractSendMethod, to: Address | undefined, options: {
-        from: Web3Core.Account;
-        value?: number | string | BN;
-        gas?: number;
-    }): Promise<Web3Core.SignedTransaction>;
-    protected signSimpleTransaction(transaction: Web3Core.TransactionConfig, to: Address | undefined, options: {
-        from: Web3Core.Account;
-        value?: number | string | BN;
-        gas?: number;
-    }): Promise<Web3Core.SignedTransaction>;
-    protected sendTransaction(transaction: ContractSendMethod | (TransactionObject<any>) | Web3Core.TransactionConfig, to: Address | undefined, options: {
-        from: Web3Core.Account;
-        value?: number | string | BN;
-        gas?: number;
-    }): Promise<Web3Core.TransactionReceipt>;
+    protected signContractTransaction(
+        transaction: TransactionObject<any> | ContractSendMethod,
+        to: Address | undefined,
+        options: {
+            from: Web3Core.Account;
+            value?: number | string | BN;
+            gas?: number;
+        },
+    ): Promise<Web3Core.SignedTransaction>;
+    protected signSimpleTransaction(
+        transaction: Web3Core.TransactionConfig,
+        to: Address | undefined,
+        options: {
+            from: Web3Core.Account;
+            value?: number | string | BN;
+            gas?: number;
+        },
+    ): Promise<Web3Core.SignedTransaction>;
+    protected sendTransaction(
+        transaction: ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+        to: Address | undefined,
+        options: {
+            from: Web3Core.Account;
+            value?: number | string | BN;
+            gas?: number;
+        },
+    ): Promise<Web3Core.TransactionReceipt>;
 }
 //# sourceMappingURL=Web3Wrapper.d.ts.map

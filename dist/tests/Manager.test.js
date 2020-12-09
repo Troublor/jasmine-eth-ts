@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const MockEthereum_1 = __importDefault(require("../src/MockEthereum"));
 const index_1 = __importDefault(require("../index"));
@@ -16,19 +18,19 @@ describe("Manager", () => {
     beforeEach(async () => {
         mockEth = new MockEthereum_1.default();
         sdk = new index_1.default(mockEth.endpoint);
-        accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
+        accounts = mockEth.predefinedPrivateKeys.map((key) => sdk.retrieveAccount(key));
         const address = await sdk.deployManager(accounts[0]);
         manager = sdk.getManager(address);
         tfc = sdk.getTFC(await manager.tfcAddress());
     });
     it('should be able to sign claim message', async function () {
-        const [admin, user,] = accounts;
+        const [admin, user] = accounts;
         const nonce = await manager.getUnusedNonce();
         let sig = manager.signTFCClaim(user.address, new bn_js_1.default("1000000000000000000"), nonce, admin);
         chai_1.expect(sig).to.not.be.undefined;
     });
     it('should be able to do a valid TFC claim', async function () {
-        const [admin, user,] = accounts;
+        const [admin, user] = accounts;
         const amount = new bn_js_1.default("1000000000000000000");
         let nonce = await manager.getUnusedNonce();
         let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);

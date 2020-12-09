@@ -3,9 +3,9 @@ import Web3Utils from "web3-utils";
 import Web3 from "web3";
 import fs from "fs";
 import path from "path";
-import {TFCManager} from "./contracts/TFCManager";
+import { TFCManager } from "./contracts/TFCManager";
 import BN from "bn.js";
-import {Address} from "./types";
+import { Address } from "./types";
 import Account from "./Account";
 
 /**
@@ -30,7 +30,7 @@ export default class Manager extends Web3Wrapper {
         super(web3);
         this._address = managerAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
-        this._contract = new web3.eth.Contract(this._abi, managerAddress) as unknown as TFCManager;
+        this._contract = (new web3.eth.Contract(this._abi, managerAddress) as unknown) as TFCManager;
     }
 
     /**
@@ -77,7 +77,7 @@ export default class Manager extends Web3Wrapper {
      * @param claimer the account to receive the claimed TFC tokens. It must be the same with the recipient of signature
      */
     public async claimTFC(amount: BN, nonce: BN, sig: string, claimer: Account): Promise<void> {
-        let tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
+        const tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: claimer.web3Account,
@@ -99,4 +99,4 @@ export default class Manager extends Web3Wrapper {
         const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address) as string;
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
     }
-};
+}

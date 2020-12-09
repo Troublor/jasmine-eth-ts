@@ -7,4 +7,3 @@ export type Address = string;
  * Type alias of Ethereum common hash, which is a 32-bytes hex string
  */
 export type Hash = string;
-

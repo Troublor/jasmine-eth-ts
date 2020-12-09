@@ -8,27 +8,20 @@ import { EventEmitter } from "events";
 import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
 
 interface EventOptions {
-  filter?: object;
-  fromBlock?: BlockType;
-  topics?: string[];
+    filter?: object;
+    fromBlock?: BlockType;
+    topics?: string[];
 }
 
 export class Pausable extends Contract {
-  constructor(
-    jsonInterface: any[],
-    address?: string,
-    options?: ContractOptions
-  );
-  clone(): Pausable;
-  methods: {
-    paused(): TransactionObject<boolean>;
-  };
-  events: {
-    Paused: ContractEvent<string>;
-    Unpaused: ContractEvent<string>;
-    allEvents: (
-      options?: EventOptions,
-      cb?: Callback<EventLog>
-    ) => EventEmitter;
-  };
+    constructor(jsonInterface: any[], address?: string, options?: ContractOptions);
+    clone(): Pausable;
+    methods: {
+        paused(): TransactionObject<boolean>;
+    };
+    events: {
+        Paused: ContractEvent<string>;
+        Unpaused: ContractEvent<string>;
+        allEvents: (options?: EventOptions, cb?: Callback<EventLog>) => EventEmitter;
+    };
 }

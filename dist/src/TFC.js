@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
 const fs_1 = __importDefault(require("fs"));
@@ -23,7 +25,9 @@ class TFC extends Web3Wrapper_1.default {
     constructor(web3, tfcAddress) {
         super(web3);
         this._address = tfcAddress;
-        this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
+        this._abi = JSON.parse(
+            fs_1.default.readFileSync(path_1.default.join(__dirname, 'contracts', 'TFCToken.abi.json')).toString(),
+        );
         this._contract = new web3.eth.Contract(this._abi, tfcAddress);
     }
     /**
@@ -52,10 +56,12 @@ class TFC extends Web3Wrapper_1.default {
      */
     async decimals() {
         return new Promise((resolve, reject) => {
-            this._contract.methods.decimals().call()
-                .then(r => {
-                resolve(parseInt(r));
-            })
+            this._contract.methods
+                .decimals()
+                .call()
+                .then((r) => {
+                    resolve(parseInt(r));
+                })
                 .catch(reject);
         });
     }
@@ -64,10 +70,12 @@ class TFC extends Web3Wrapper_1.default {
      */
     async totalSupply() {
         return new Promise((resolve, reject) => {
-            this._contract.methods.totalSupply().call()
-                .then(r => {
-                resolve(new bn_js_1.default(r));
-            })
+            this._contract.methods
+                .totalSupply()
+                .call()
+                .then((r) => {
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -80,10 +88,12 @@ class TFC extends Web3Wrapper_1.default {
      */
     async allowance(owner, spender) {
         return new Promise((resolve, reject) => {
-            this._contract.methods.allowance(owner, spender).call()
-                .then(r => {
-                resolve(new bn_js_1.default(r));
-            })
+            this._contract.methods
+                .allowance(owner, spender)
+                .call()
+                .then((r) => {
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -94,10 +104,12 @@ class TFC extends Web3Wrapper_1.default {
      */
     async balanceOf(owner) {
         return new Promise((resolve, reject) => {
-            this._contract.methods.balanceOf(owner).call()
-                .then(r => {
-                resolve(new bn_js_1.default(r));
-            })
+            this._contract.methods
+                .balanceOf(owner)
+                .call()
+                .then((r) => {
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -157,7 +169,7 @@ class TFC extends Web3Wrapper_1.default {
         let tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -174,7 +186,7 @@ class TFC extends Web3Wrapper_1.default {
         let tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -192,7 +204,7 @@ class TFC extends Web3Wrapper_1.default {
         let tx = this._contract.methods.mint(to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -211,10 +223,13 @@ class TFC extends Web3Wrapper_1.default {
             recipients.push(t.recipient);
             amounts.push(t.amount);
         }
-        let tx = this._contract.methods.one2manyTransfer(recipients, amounts.map(a => a.toString()));
+        let tx = this._contract.methods.one2manyTransfer(
+            recipients,
+            amounts.map((a) => a.toString()),
+        );
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);

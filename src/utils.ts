@@ -1,4 +1,4 @@
-import {Address} from "./types";
+import { Address } from "./types";
 import Web3 from "web3";
 
 /**

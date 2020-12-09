@@ -1,9 +1,9 @@
 import SDK from "../index";
 
 async function deploy(endpoint: string) {
-    let sdk = new SDK(endpoint);
-    let admin = sdk.retrieveAccount("0x11cb04ef3d5b276da031e0410d9425726187739cbe54cdedd5401911e7428df3");
-    let managerAddr = await sdk.deployManager(admin);
+    const sdk = new SDK(endpoint);
+    const admin = sdk.retrieveAccount("0x11cb04ef3d5b276da031e0410d9425726187739cbe54cdedd5401911e7428df3");
+    const managerAddr = await sdk.deployManager(admin);
     console.log(managerAddr as string);
 }
 

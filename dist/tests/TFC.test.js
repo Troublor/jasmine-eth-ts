@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
 const SDK_1 = __importDefault(require("../src/SDK"));
@@ -12,7 +14,9 @@ describe("TFC", function () {
     let sdk;
     let admin;
     let tfcAddress;
-    let initialSupply = new bn_js_1.default(20).mul(new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')));
+    let initialSupply = new bn_js_1.default(20).mul(
+        new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')),
+    );
     let tfc;
     let account1;
     let accounts;
@@ -21,14 +25,18 @@ describe("TFC", function () {
         // @ts-ignore
         let mockEth = new MockEthereum_1.default();
         sdk = new SDK_1.default(mockEth.endpoint);
-        accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
+        accounts = mockEth.predefinedPrivateKeys.map((key) => sdk.retrieveAccount(key));
         admin = accounts[0];
         tfcAddress = await sdk.deployTFC(admin);
         tfc = sdk.getTFC(tfcAddress);
         account1 = accounts[1];
         // make initial supply
         for (const acc of accounts.slice(0, 20)) {
-            await tfc.mint(acc.address, new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')), admin);
+            await tfc.mint(
+                acc.address,
+                new bn_js_1.default('100000000').mul(new bn_js_1.default('1000000000000000000')),
+                admin,
+            );
         }
     });
     afterEach(() => {
@@ -95,8 +103,7 @@ describe("TFC", function () {
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(50)).toString());
     });
     it('should not be able to transfer when zero balance', function (done) {
-        tfc.transfer(admin.address, new bn_js_1.default(1), accounts[20])
-            .catch(() => {
+        tfc.transfer(admin.address, new bn_js_1.default(1), accounts[20]).catch(() => {
             done();
         });
     });
@@ -108,8 +115,7 @@ describe("TFC", function () {
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(50)).toString());
     });
     it('should not be able to transferFrom without allowance', function (done) {
-        tfc.transferFrom(admin.address, account1.address, new bn_js_1.default(50), account1)
-            .catch(() => {
+        tfc.transferFrom(admin.address, account1.address, new bn_js_1.default(50), account1).catch(() => {
             done();
         });
     });
@@ -120,8 +126,7 @@ describe("TFC", function () {
         chai_1.expect(balance.toString()).to.be.equal(originalBalanceAccount1.add(new bn_js_1.default(100)).toString());
     });
     it('should not be able to mint without minter role', function (done) {
-        tfc.mint(account1.address, new bn_js_1.default(100), account1)
-            .catch(() => {
+        tfc.mint(account1.address, new bn_js_1.default(100), account1).catch(() => {
             done();
         });
     });

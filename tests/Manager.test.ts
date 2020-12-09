@@ -1,9 +1,9 @@
 import Account from "../src/Account";
 import Manager from "../src/Manager";
 import MockEthereum from "../src/MockEthereum";
-import SDK, {TFC} from "../index";
+import SDK, { TFC } from "../index";
 import BN from "bn.js";
-import {expect} from "chai";
+import { expect } from "chai";
 import Web3Core from "web3-core";
 
 describe("Manager", () => {
@@ -15,22 +15,22 @@ describe("Manager", () => {
 
     beforeEach(async () => {
         mockEth = new MockEthereum();
-        sdk = new SDK(mockEth.endpoint as unknown as Web3Core.provider);
-        accounts = mockEth.predefinedPrivateKeys.map(key => sdk.retrieveAccount(key));
+        sdk = new SDK((mockEth.endpoint as unknown) as Web3Core.provider);
+        accounts = mockEth.predefinedPrivateKeys.map((key) => sdk.retrieveAccount(key));
         const address = await sdk.deployManager(accounts[0]);
         manager = sdk.getManager(address);
         tfc = sdk.getTFC(await manager.tfcAddress());
     });
 
     it('should be able to sign claim message', async function () {
-        const [admin, user,] = accounts;
+        const [admin, user] = accounts;
         const nonce = await manager.getUnusedNonce();
-        let sig = manager.signTFCClaim(user.address, new BN("1000000000000000000"), nonce, admin);
+        const sig = manager.signTFCClaim(user.address, new BN("1000000000000000000"), nonce, admin);
         expect(sig).to.not.be.undefined;
     });
 
     it('should be able to do a valid TFC claim', async function () {
-        const [admin, user,] = accounts;
+        const [admin, user] = accounts;
         const amount = new BN("1000000000000000000");
         let nonce = await manager.getUnusedNonce();
         let sig = await manager.signTFCClaim(user.address, amount, nonce, admin);
@@ -46,9 +46,9 @@ describe("Manager", () => {
     });
 
     it('should allow deployer to mint', async function () {
-        let originalBalance = await tfc.balanceOf(accounts[0].address);
+        const originalBalance = await tfc.balanceOf(accounts[0].address);
         await tfc.mint(accounts[0].address, new BN(100), accounts[0]);
-        let balance = await tfc.balanceOf(accounts[0].address);
+        const balance = await tfc.balanceOf(accounts[0].address);
         expect(originalBalance.add(new BN(100)).toString()).to.be.equal(balance.toString());
     });
 });

@@ -1,5 +1,5 @@
-import {Address} from "./types";
-import {TFCToken} from "./contracts/TFCToken";
+import { Address } from "./types";
+import { TFCToken } from "./contracts/TFCToken";
 import Web3 from "web3";
 import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";
@@ -29,7 +29,7 @@ export default class TFC extends Web3Wrapper {
         super(web3);
         this._address = tfcAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
-        this._contract = new web3.eth.Contract(this._abi, tfcAddress) as unknown as TFCToken;
+        this._contract = (new web3.eth.Contract(this._abi, tfcAddress) as unknown) as TFCToken;
     }
 
     /**
@@ -62,8 +62,10 @@ export default class TFC extends Web3Wrapper {
      */
     public async decimals(): Promise<number> {
         return new Promise<number>((resolve, reject) => {
-            this._contract.methods.decimals().call()
-                .then(r => {
+            this._contract.methods
+                .decimals()
+                .call()
+                .then((r) => {
                     resolve(parseInt(r));
                 })
                 .catch(reject);
@@ -75,8 +77,10 @@ export default class TFC extends Web3Wrapper {
      */
     public async totalSupply(): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
-            this._contract.methods.totalSupply().call()
-                .then(r => {
+            this._contract.methods
+                .totalSupply()
+                .call()
+                .then((r) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);
@@ -92,8 +96,10 @@ export default class TFC extends Web3Wrapper {
      */
     public async allowance(owner: Address, spender: Address): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
-            this._contract.methods.allowance(owner, spender).call()
-                .then(r => {
+            this._contract.methods
+                .allowance(owner, spender)
+                .call()
+                .then((r) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);
@@ -107,8 +113,10 @@ export default class TFC extends Web3Wrapper {
      */
     public async balanceOf(owner: Address): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
-            this._contract.methods.balanceOf(owner).call()
-                .then(r => {
+            this._contract.methods
+                .balanceOf(owner)
+                .call()
+                .then((r) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);
@@ -120,9 +128,9 @@ export default class TFC extends Web3Wrapper {
      * Administrators are qualified to mint new tokens.
      */
     public async adminAddresses(): Promise<Address[]> {
-        let adminRole = await this._contract.methods.DEFAULT_ADMIN_ROLE().call();
-        let adminCount = parseInt(await this._contract.methods.getRoleMemberCount(adminRole).call());
-        let admins: Address[] = [];
+        const adminRole = await this._contract.methods.DEFAULT_ADMIN_ROLE().call();
+        const adminCount = parseInt(await this._contract.methods.getRoleMemberCount(adminRole).call());
+        const admins: Address[] = [];
         for (let i = 0; i < adminCount; i++) {
             admins.push(await this._contract.methods.getRoleMember(adminRole, i).call());
         }
@@ -136,8 +144,8 @@ export default class TFC extends Web3Wrapper {
      * @param sender the account to check.
      */
     public async canMint(sender: Account): Promise<boolean> {
-        let address = sender.address;
-        let minterRole = await this._contract.methods.MINTER_ROLE().call();
+        const address = sender.address;
+        const minterRole = await this._contract.methods.MINTER_ROLE().call();
         return await this._contract.methods.hasRole(minterRole, address).call();
     }
 
@@ -149,7 +157,7 @@ export default class TFC extends Web3Wrapper {
      * @param sender the sender account of this transaction.
      */
     public async transfer(to: Address, amount: BN, sender: Account): Promise<void> {
-        let tx = this._contract.methods.transfer(to, amount.toString());
+        const tx = this._contract.methods.transfer(to, amount.toString());
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,
@@ -171,10 +179,10 @@ export default class TFC extends Web3Wrapper {
      * This sender is different from the {@param from}.
      */
     public async transferFrom(from: Address, to: Address, amount: BN, sender: Account): Promise<void> {
-        let tx = this._contract.methods.transferFrom(from, to, amount.toString());
+        const tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -189,10 +197,10 @@ export default class TFC extends Web3Wrapper {
      * @param sender transaction sender, the owner of the token.
      */
     public async approve(spender: Address, amount: BN, sender: Account): Promise<void> {
-        let tx = this._contract.methods.approve(spender, amount.toString());
+        const tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -208,10 +216,10 @@ export default class TFC extends Web3Wrapper {
      * @param sender transaction sender.
      */
     public async mint(to: Address, amount: BN, sender: Account): Promise<void> {
-        let tx = this._contract.methods.mint(to, amount.toString());
+        const tx = this._contract.methods.mint(to, amount.toString());
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);
@@ -224,17 +232,23 @@ export default class TFC extends Web3Wrapper {
      * @param bundledTransfer the bundled transfer recipient and amount
      * @param sender the sender who sends the transaction and whose tokens are transferred
      */
-    public async one2manyTransfer(bundledTransfer: { recipient: Address, amount: BN }[], sender: Account): Promise<void> {
-        let recipients = [];
-        let amounts = [];
-        for (let t of bundledTransfer) {
+    public async one2manyTransfer(
+        bundledTransfer: { recipient: Address; amount: BN }[],
+        sender: Account,
+    ): Promise<void> {
+        const recipients = [];
+        const amounts = [];
+        for (const t of bundledTransfer) {
             recipients.push(t.recipient);
             amounts.push(t.amount);
         }
-        let tx = this._contract.methods.one2manyTransfer(recipients, amounts.map(a => a.toString()));
+        const tx = this._contract.methods.one2manyTransfer(
+            recipients,
+            amounts.map((a) => a.toString()),
+        );
         return new Promise<void>((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
-                from: sender.web3Account
+                from: sender.web3Account,
             })
                 .then(() => resolve())
                 .catch(reject);

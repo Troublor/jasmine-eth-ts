@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ganache_core_1 = __importDefault(require("ganache-core"));
 /**
@@ -47,14 +49,14 @@ class MockEthereum {
             "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c37b3",
             "0xb0057716d5917badaf911b193b12b910811c1497b5bada8d7711f758981c37c3",
         ];
-        let accounts = this.predefinedPrivateKeys.map(key => {
+        let accounts = this.predefinedPrivateKeys.map((key) => {
             return {
                 balance: "0x56BC75E2D63100000",
                 secretKey: key,
             };
         });
         this.endpoint = ganache_core_1.default.provider({
-            "accounts": accounts,
+            accounts: accounts,
         });
     }
 }

@@ -8,35 +8,24 @@ import { EventEmitter } from "events";
 import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
 
 interface EventOptions {
-  filter?: object;
-  fromBlock?: BlockType;
-  topics?: string[];
+    filter?: object;
+    fromBlock?: BlockType;
+    topics?: string[];
 }
 
 export class TFCManager extends Contract {
-  constructor(
-    jsonInterface: any[],
-    address?: string,
-    options?: ContractOptions
-  );
-  clone(): TFCManager;
-  methods: {
-    claimTFC(
-      amount: number | string,
-      nonce: number | string,
-      sig: string | number[]
-    ): TransactionObject<void>;
+    constructor(jsonInterface: any[], address?: string, options?: ContractOptions);
+    clone(): TFCManager;
+    methods: {
+        claimTFC(amount: number | string, nonce: number | string, sig: string | number[]): TransactionObject<void>;
 
-    signer(): TransactionObject<string>;
+        signer(): TransactionObject<string>;
 
-    tfcToken(): TransactionObject<string>;
+        tfcToken(): TransactionObject<string>;
 
-    usedNonces(arg0: number | string): TransactionObject<boolean>;
-  };
-  events: {
-    allEvents: (
-      options?: EventOptions,
-      cb?: Callback<EventLog>
-    ) => EventEmitter;
-  };
+        usedNonces(arg0: number | string): TransactionObject<boolean>;
+    };
+    events: {
+        allEvents: (options?: EventOptions, cb?: Callback<EventLog>) => EventEmitter;
+    };
 }

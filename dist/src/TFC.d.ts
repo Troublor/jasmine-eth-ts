@@ -112,9 +112,12 @@ export default class TFC extends Web3Wrapper {
      * @param bundledTransfer the bundled transfer recipient and amount
      * @param sender the sender who sends the transaction and whose tokens are transferred
      */
-    one2manyTransfer(bundledTransfer: {
-        recipient: Address;
-        amount: BN;
-    }[], sender: Account): Promise<void>;
+    one2manyTransfer(
+        bundledTransfer: {
+            recipient: Address;
+            amount: BN;
+        }[],
+        sender: Account,
+    ): Promise<void>;
 }
 //# sourceMappingURL=TFC.d.ts.map

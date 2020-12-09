@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import TFC from "./TFC";
-import {Address} from "./types";
+import { Address } from "./types";
 import Account from "./Account";
 import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
@@ -8,8 +8,8 @@ import fs from "fs";
 import path from "path";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
-import {ContractSendMethod} from "web3-eth-contract";
-import {TransactionObject} from "./contracts/types";
+import { ContractSendMethod } from "web3-eth-contract";
+import { TransactionObject } from "./contracts/types";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -31,24 +31,24 @@ export default class SDK extends Web3Wrapper {
      * @param sender the transaction sender who creates the contract
      */
     public deployTFC(sender: Account): Promise<Address> {
-
         return new Promise<Address>(async (resolve, reject) => {
-            let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
-            let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.bin"));
-            let contract = new this.web3.eth.Contract(abi);
-            let tx = contract.deploy({
+            const abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
+            const data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.bin"));
+            const contract = new this.web3.eth.Contract(abi);
+            const tx = contract.deploy({
                 data: data.toString().trim(),
-                arguments: [
-                    sender.address,
-                    sender.address
-                ],
-            })
-            this.sendTransaction(tx as (ContractSendMethod | (TransactionObject<any>) | Web3Core.TransactionConfig), undefined, {
-                from: sender.web3Account,
-                gas: 6000000
-            })
-                .then(receipt => {
-                    resolve(receipt.contractAddress as Address)
+                arguments: [sender.address, sender.address],
+            });
+            this.sendTransaction(
+                tx as ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+                undefined,
+                {
+                    from: sender.web3Account,
+                    gas: 6000000,
+                },
+            )
+                .then((receipt) => {
+                    resolve(receipt.contractAddress as Address);
                 })
                 .catch(reject);
         });
@@ -62,18 +62,24 @@ export default class SDK extends Web3Wrapper {
      */
     public deployManager(sender: Account): Promise<Address> {
         return new Promise<Address>(async (resolve, reject) => {
-            let abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
-            let data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.bin"));
-            let contract = new this.web3.eth.Contract(abi);
-            let tx = contract.deploy({
+            const abi = JSON.parse(
+                fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString(),
+            );
+            const data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.bin"));
+            const contract = new this.web3.eth.Contract(abi);
+            const tx = contract.deploy({
                 data: data.toString().trim(),
-            })
-            this.sendTransaction(tx as (ContractSendMethod | (TransactionObject<any>) | Web3Core.TransactionConfig), undefined, {
-                from: sender.web3Account,
-                gas: 6000000
-            })
-                .then(async receipt => {
-                    resolve(receipt.contractAddress as Address)
+            });
+            this.sendTransaction(
+                tx as ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+                undefined,
+                {
+                    from: sender.web3Account,
+                    gas: 6000000,
+                },
+            )
+                .then(async (receipt) => {
+                    resolve(receipt.contractAddress as Address);
                 })
                 .catch(reject);
         });
@@ -113,7 +119,7 @@ export default class SDK extends Web3Wrapper {
      * Be sure to appropriately save the private key of the account to be able to retrieve next time.
      */
     public createAccount(): Account {
-        let {privateKey} = this.web3.eth.accounts.create();
+        const { privateKey } = this.web3.eth.accounts.create();
         return new Account(this.web3, privateKey);
     }
 
@@ -125,8 +131,9 @@ export default class SDK extends Web3Wrapper {
      */
     public balanceOf(address: Address): Promise<BN> {
         return new Promise<BN>((resolve, reject) => {
-            this.web3.eth.getBalance(address)
-                .then(bal => {
+            this.web3.eth
+                .getBalance(address)
+                .then((bal) => {
                     resolve(new BN(bal));
                 })
                 .catch(reject);
@@ -149,9 +156,11 @@ export default class SDK extends Web3Wrapper {
                 from: sender.address,
                 // nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
             };
-            this.sendTransaction(tx, to, {from: sender.web3Account}).then(() => {
-                resolve()
-            }).catch(reject);
+            this.sendTransaction(tx, to, { from: sender.web3Account })
+                .then(() => {
+                    resolve();
+                })
+                .catch(reject);
         });
     }
 

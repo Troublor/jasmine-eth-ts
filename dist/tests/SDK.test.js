@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
 const SDK_1 = __importDefault(require("../src/SDK"));
@@ -27,7 +29,9 @@ describe("SDK", () => {
     });
     it('should be able to create account', function () {
         let account = sdk.createAccount();
-        chai_1.expect(sdk.web3.eth.accounts.privateKeyToAccount(account.privateKey).address).to.be.equal(account.address);
+        chai_1
+            .expect(sdk.web3.eth.accounts.privateKeyToAccount(account.privateKey).address)
+            .to.be.equal(account.address);
     });
     it('should retrieve account correctly', function () {
         let account = sdk.createAccount();
@@ -35,7 +39,7 @@ describe("SDK", () => {
         chai_1.expect(retrieved.address).to.be.equal(account.address);
     });
     it('should be able to deploy TFC', async function () {
-        let holders = predefinedPrivateKeys.map(key => sdk.retrieveAccount(key)).slice(0, 20);
+        let holders = predefinedPrivateKeys.map((key) => sdk.retrieveAccount(key)).slice(0, 20);
         let tfcAddress = await sdk.deployTFC(holders[0]);
         let code = await sdk.web3.eth.getCode(tfcAddress);
         chai_1.expect(code).to.not.be.undefined;
@@ -50,15 +54,21 @@ describe("SDK", () => {
         chai_1.expect(code).to.not.be.undefined;
     });
     it('should convert ether to wei correctly', function () {
-        chai_1.expect(sdk.ether2wei(new bn_js_1.default("1")).toString()).to.be.equal(new bn_js_1.default("1000000000000000000").toString());
+        chai_1
+            .expect(sdk.ether2wei(new bn_js_1.default('1')).toString())
+            .to.be.equal(new bn_js_1.default("1000000000000000000").toString());
     });
     it('should convert wei to ether correctly', function () {
-        chai_1.expect(sdk.wei2ether(new bn_js_1.default("1000000000000000000")).toString()).to.be.equal(new bn_js_1.default("1").toString());
+        chai_1
+            .expect(sdk.wei2ether(new bn_js_1.default('1000000000000000000')).toString())
+            .to.be.equal(new bn_js_1.default("1").toString());
     });
     it('should get ether balance correctly', async function () {
         for (let key of predefinedPrivateKeys) {
             let balance = await sdk.balanceOf(sdk.retrieveAccount(key).address);
-            chai_1.expect(balance.toString()).to.be.equal(new bn_js_1.default("1000000000000000000").mul(new bn_js_1.default(100)).toString()); // 100 ether for predefined accounts
+            chai_1
+                .expect(balance.toString())
+                .to.be.equal(new bn_js_1.default("1000000000000000000").mul(new bn_js_1.default(100)).toString()); // 100 ether for predefined accounts
         }
     });
     it('should transfer ether correctly', async function () {
@@ -68,7 +78,9 @@ describe("SDK", () => {
         chai_1.expect(balance.toString()).to.be.equal(sdk.ether2wei(new bn_js_1.default(0)).toString());
         await sdk.transfer(to.address, sdk.ether2wei(new bn_js_1.default(1)).div(new bn_js_1.default(2)), from);
         balance = await sdk.balanceOf(to.address);
-        chai_1.expect(balance.toString()).to.be.equal(sdk.ether2wei(new bn_js_1.default(1)).div(new bn_js_1.default(2)).toString());
+        chai_1
+            .expect(balance.toString())
+            .to.be.equal(sdk.ether2wei(new bn_js_1.default(1)).div(new bn_js_1.default(2)).toString());
     });
 });
 //# sourceMappingURL=SDK.test.js.map
