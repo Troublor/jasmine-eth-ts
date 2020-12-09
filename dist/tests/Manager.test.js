@@ -1,9 +1,7 @@
 "use strict";
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const MockEthereum_1 = __importDefault(require("../src/MockEthereum"));
 const index_1 = __importDefault(require("../index"));
@@ -26,7 +24,7 @@ describe("Manager", () => {
     it('should be able to sign claim message', async function () {
         const [admin, user] = accounts;
         const nonce = await manager.getUnusedNonce();
-        let sig = manager.signTFCClaim(user.address, new bn_js_1.default("1000000000000000000"), nonce, admin);
+        const sig = manager.signTFCClaim(user.address, new bn_js_1.default("1000000000000000000"), nonce, admin);
         chai_1.expect(sig).to.not.be.undefined;
     });
     it('should be able to do a valid TFC claim', async function () {
@@ -44,9 +42,9 @@ describe("Manager", () => {
         chai_1.expect(balance.toString()).to.be.equal(amount.mul(new bn_js_1.default(2)).toString());
     });
     it('should allow deployer to mint', async function () {
-        let originalBalance = await tfc.balanceOf(accounts[0].address);
+        const originalBalance = await tfc.balanceOf(accounts[0].address);
         await tfc.mint(accounts[0].address, new bn_js_1.default(100), accounts[0]);
-        let balance = await tfc.balanceOf(accounts[0].address);
+        const balance = await tfc.balanceOf(accounts[0].address);
         chai_1.expect(originalBalance.add(new bn_js_1.default(100)).toString()).to.be.equal(balance.toString());
     });
 });

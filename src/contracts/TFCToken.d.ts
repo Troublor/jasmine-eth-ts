@@ -2,10 +2,17 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions } from "web3-eth-contract";
+import { ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract
+} from "./types";
 
 interface EventOptions {
   filter?: object;
@@ -13,152 +20,230 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class TFCToken extends Contract {
+export type Approval = ContractEventLog<{
+  owner: string;
+  spender: string;
+  value: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type Paused = ContractEventLog<{
+  account: string;
+  0: string;
+}>;
+export type RoleAdminChanged = ContractEventLog<{
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type RoleGranted = ContractEventLog<{
+  role: string;
+  account: string;
+  sender: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type RoleRevoked = ContractEventLog<{
+  role: string;
+  account: string;
+  sender: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type Transfer = ContractEventLog<{
+  from: string;
+  to: string;
+  value: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type Unpaused = ContractEventLog<{
+  account: string;
+  0: string;
+}>;
+
+export interface TfcToken extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  );
-  clone(): TFCToken;
+  ): TfcToken;
+  clone(): TfcToken;
   methods: {
-    BURNER_ROLE(): TransactionObject<string>;
+    BURNER_ROLE(): NonPayableTransactionObject<string>;
 
-    DEFAULT_ADMIN_ROLE(): TransactionObject<string>;
+    DEFAULT_ADMIN_ROLE(): NonPayableTransactionObject<string>;
 
-    MINTER_ROLE(): TransactionObject<string>;
+    MINTER_ROLE(): NonPayableTransactionObject<string>;
 
-    PAUSER_ROLE(): TransactionObject<string>;
+    PAUSER_ROLE(): NonPayableTransactionObject<string>;
 
-    allowance(owner: string, spender: string): TransactionObject<string>;
+    allowance(
+      owner: string,
+      spender: string
+    ): NonPayableTransactionObject<string>;
 
     approve(
       spender: string,
       amount: number | string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
-    balanceOf(account: string): TransactionObject<string>;
+    balanceOf(account: string): NonPayableTransactionObject<string>;
 
-    burn(amount: number | string): TransactionObject<void>;
+    burn(amount: number | string): NonPayableTransactionObject<void>;
 
-    burnFrom(account: string, amount: number | string): TransactionObject<void>;
+    burnFrom(
+      account: string,
+      amount: number | string
+    ): NonPayableTransactionObject<void>;
 
-    decimals(): TransactionObject<string>;
+    decimals(): NonPayableTransactionObject<string>;
 
     decreaseAllowance(
       spender: string,
       subtractedValue: number | string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
-    getRoleAdmin(role: string | number[]): TransactionObject<string>;
+    getRoleAdmin(role: string | number[]): NonPayableTransactionObject<string>;
 
     getRoleMember(
       role: string | number[],
       index: number | string
-    ): TransactionObject<string>;
+    ): NonPayableTransactionObject<string>;
 
-    getRoleMemberCount(role: string | number[]): TransactionObject<string>;
+    getRoleMemberCount(
+      role: string | number[]
+    ): NonPayableTransactionObject<string>;
 
     grantRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
 
     hasRole(
       role: string | number[],
       account: string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
     increaseAllowance(
       spender: string,
       addedValue: number | string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
-    mint(to: string, amount: number | string): TransactionObject<void>;
+    mint(
+      to: string,
+      amount: number | string
+    ): NonPayableTransactionObject<void>;
 
-    name(): TransactionObject<string>;
+    name(): NonPayableTransactionObject<string>;
 
     one2manyTransfer(
       tos: string[],
       amounts: (number | string)[]
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
-    pause(): TransactionObject<void>;
+    pause(): NonPayableTransactionObject<void>;
 
-    paused(): TransactionObject<boolean>;
+    paused(): NonPayableTransactionObject<boolean>;
 
     renounceRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
 
     revokeRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
 
-    symbol(): TransactionObject<string>;
+    symbol(): NonPayableTransactionObject<string>;
 
-    totalSupply(): TransactionObject<string>;
+    totalSupply(): NonPayableTransactionObject<string>;
 
     transfer(
       recipient: string,
       amount: number | string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
     transferFrom(
       sender: string,
       recipient: string,
       amount: number | string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
-    unpause(): TransactionObject<void>;
+    unpause(): NonPayableTransactionObject<void>;
   };
   events: {
-    Approval: ContractEvent<{
-      owner: string;
-      spender: string;
-      value: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    Paused: ContractEvent<string>;
-    RoleAdminChanged: ContractEvent<{
-      role: string;
-      previousAdminRole: string;
-      newAdminRole: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    RoleGranted: ContractEvent<{
-      role: string;
-      account: string;
-      sender: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    RoleRevoked: ContractEvent<{
-      role: string;
-      account: string;
-      sender: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    Transfer: ContractEvent<{
-      from: string;
-      to: string;
-      value: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    Unpaused: ContractEvent<string>;
-    allEvents: (
+    Approval(cb?: Callback<Approval>): EventEmitter;
+    Approval(options?: EventOptions, cb?: Callback<Approval>): EventEmitter;
+
+    Paused(cb?: Callback<Paused>): EventEmitter;
+    Paused(options?: EventOptions, cb?: Callback<Paused>): EventEmitter;
+
+    RoleAdminChanged(cb?: Callback<RoleAdminChanged>): EventEmitter;
+    RoleAdminChanged(
       options?: EventOptions,
-      cb?: Callback<EventLog>
-    ) => EventEmitter;
+      cb?: Callback<RoleAdminChanged>
+    ): EventEmitter;
+
+    RoleGranted(cb?: Callback<RoleGranted>): EventEmitter;
+    RoleGranted(
+      options?: EventOptions,
+      cb?: Callback<RoleGranted>
+    ): EventEmitter;
+
+    RoleRevoked(cb?: Callback<RoleRevoked>): EventEmitter;
+    RoleRevoked(
+      options?: EventOptions,
+      cb?: Callback<RoleRevoked>
+    ): EventEmitter;
+
+    Transfer(cb?: Callback<Transfer>): EventEmitter;
+    Transfer(options?: EventOptions, cb?: Callback<Transfer>): EventEmitter;
+
+    Unpaused(cb?: Callback<Unpaused>): EventEmitter;
+    Unpaused(options?: EventOptions, cb?: Callback<Unpaused>): EventEmitter;
+
+    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
   };
+
+  once(event: "Approval", cb: Callback<Approval>): void;
+  once(event: "Approval", options: EventOptions, cb: Callback<Approval>): void;
+
+  once(event: "Paused", cb: Callback<Paused>): void;
+  once(event: "Paused", options: EventOptions, cb: Callback<Paused>): void;
+
+  once(event: "RoleAdminChanged", cb: Callback<RoleAdminChanged>): void;
+  once(
+    event: "RoleAdminChanged",
+    options: EventOptions,
+    cb: Callback<RoleAdminChanged>
+  ): void;
+
+  once(event: "RoleGranted", cb: Callback<RoleGranted>): void;
+  once(
+    event: "RoleGranted",
+    options: EventOptions,
+    cb: Callback<RoleGranted>
+  ): void;
+
+  once(event: "RoleRevoked", cb: Callback<RoleRevoked>): void;
+  once(
+    event: "RoleRevoked",
+    options: EventOptions,
+    cb: Callback<RoleRevoked>
+  ): void;
+
+  once(event: "Transfer", cb: Callback<Transfer>): void;
+  once(event: "Transfer", options: EventOptions, cb: Callback<Transfer>): void;
+
+  once(event: "Unpaused", cb: Callback<Unpaused>): void;
+  once(event: "Unpaused", options: EventOptions, cb: Callback<Unpaused>): void;
 }

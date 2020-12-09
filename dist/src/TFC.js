@@ -1,9 +1,7 @@
 "use strict";
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
 const fs_1 = __importDefault(require("fs"));
@@ -25,9 +23,7 @@ class TFC extends Web3Wrapper_1.default {
     constructor(web3, tfcAddress) {
         super(web3);
         this._address = tfcAddress;
-        this._abi = JSON.parse(
-            fs_1.default.readFileSync(path_1.default.join(__dirname, 'contracts', 'TFCToken.abi.json')).toString(),
-        );
+        this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
         this._contract = new web3.eth.Contract(this._abi, tfcAddress);
     }
     /**
@@ -60,8 +56,8 @@ class TFC extends Web3Wrapper_1.default {
                 .decimals()
                 .call()
                 .then((r) => {
-                    resolve(parseInt(r));
-                })
+                resolve(parseInt(r));
+            })
                 .catch(reject);
         });
     }
@@ -74,8 +70,8 @@ class TFC extends Web3Wrapper_1.default {
                 .totalSupply()
                 .call()
                 .then((r) => {
-                    resolve(new bn_js_1.default(r));
-                })
+                resolve(new bn_js_1.default(r));
+            })
                 .catch(reject);
         });
     }
@@ -92,8 +88,8 @@ class TFC extends Web3Wrapper_1.default {
                 .allowance(owner, spender)
                 .call()
                 .then((r) => {
-                    resolve(new bn_js_1.default(r));
-                })
+                resolve(new bn_js_1.default(r));
+            })
                 .catch(reject);
         });
     }
@@ -108,8 +104,8 @@ class TFC extends Web3Wrapper_1.default {
                 .balanceOf(owner)
                 .call()
                 .then((r) => {
-                    resolve(new bn_js_1.default(r));
-                })
+                resolve(new bn_js_1.default(r));
+            })
                 .catch(reject);
         });
     }
@@ -118,9 +114,9 @@ class TFC extends Web3Wrapper_1.default {
      * Administrators are qualified to mint new tokens.
      */
     async adminAddresses() {
-        let adminRole = await this._contract.methods.DEFAULT_ADMIN_ROLE().call();
-        let adminCount = parseInt(await this._contract.methods.getRoleMemberCount(adminRole).call());
-        let admins = [];
+        const adminRole = await this._contract.methods.DEFAULT_ADMIN_ROLE().call();
+        const adminCount = parseInt(await this._contract.methods.getRoleMemberCount(adminRole).call());
+        const admins = [];
         for (let i = 0; i < adminCount; i++) {
             admins.push(await this._contract.methods.getRoleMember(adminRole, i).call());
         }
@@ -133,8 +129,8 @@ class TFC extends Web3Wrapper_1.default {
      * @param sender the account to check.
      */
     async canMint(sender) {
-        let address = sender.address;
-        let minterRole = await this._contract.methods.MINTER_ROLE().call();
+        const address = sender.address;
+        const minterRole = await this._contract.methods.MINTER_ROLE().call();
         return await this._contract.methods.hasRole(minterRole, address).call();
     }
     /**
@@ -145,7 +141,7 @@ class TFC extends Web3Wrapper_1.default {
      * @param sender the sender account of this transaction.
      */
     async transfer(to, amount, sender) {
-        let tx = this._contract.methods.transfer(to, amount.toString());
+        const tx = this._contract.methods.transfer(to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,
@@ -166,7 +162,7 @@ class TFC extends Web3Wrapper_1.default {
      * This sender is different from the {@param from}.
      */
     async transferFrom(from, to, amount, sender) {
-        let tx = this._contract.methods.transferFrom(from, to, amount.toString());
+        const tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,
@@ -183,7 +179,7 @@ class TFC extends Web3Wrapper_1.default {
      * @param sender transaction sender, the owner of the token.
      */
     async approve(spender, amount, sender) {
-        let tx = this._contract.methods.approve(spender, amount.toString());
+        const tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,
@@ -201,7 +197,7 @@ class TFC extends Web3Wrapper_1.default {
      * @param sender transaction sender.
      */
     async mint(to, amount, sender) {
-        let tx = this._contract.methods.mint(to, amount.toString());
+        const tx = this._contract.methods.mint(to, amount.toString());
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,
@@ -217,16 +213,13 @@ class TFC extends Web3Wrapper_1.default {
      * @param sender the sender who sends the transaction and whose tokens are transferred
      */
     async one2manyTransfer(bundledTransfer, sender) {
-        let recipients = [];
-        let amounts = [];
-        for (let t of bundledTransfer) {
+        const recipients = [];
+        const amounts = [];
+        for (const t of bundledTransfer) {
             recipients.push(t.recipient);
             amounts.push(t.amount);
         }
-        let tx = this._contract.methods.one2manyTransfer(
-            recipients,
-            amounts.map((a) => a.toString()),
-        );
+        const tx = this._contract.methods.one2manyTransfer(recipients, amounts.map((a) => a.toString()));
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: sender.web3Account,

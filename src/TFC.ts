@@ -1,5 +1,5 @@
 import { Address } from "./types";
-import { TFCToken } from "./contracts/TFCToken";
+import { TfcToken } from "./contracts/TFCToken";
 import Web3 from "web3";
 import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";
@@ -14,7 +14,7 @@ import Account from "./Account";
  */
 export default class TFC extends Web3Wrapper {
     private readonly _address: Address;
-    private readonly _contract: TFCToken;
+    private readonly _contract: TfcToken;
     private readonly _abi: Web3Utils.AbiItem[];
 
     /**
@@ -29,13 +29,13 @@ export default class TFC extends Web3Wrapper {
         super(web3);
         this._address = tfcAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
-        this._contract = (new web3.eth.Contract(this._abi, tfcAddress) as unknown) as TFCToken;
+        this._contract = (new web3.eth.Contract(this._abi, tfcAddress) as unknown) as TfcToken;
     }
 
     /**
      * Get the web3.js contract object.
      */
-    get contract(): TFCToken {
+    get contract(): TfcToken {
         return this._contract;
     }
 
@@ -65,7 +65,7 @@ export default class TFC extends Web3Wrapper {
             this._contract.methods
                 .decimals()
                 .call()
-                .then((r) => {
+                .then((r: string) => {
                     resolve(parseInt(r));
                 })
                 .catch(reject);
@@ -80,7 +80,7 @@ export default class TFC extends Web3Wrapper {
             this._contract.methods
                 .totalSupply()
                 .call()
-                .then((r) => {
+                .then((r: string) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);
@@ -99,7 +99,7 @@ export default class TFC extends Web3Wrapper {
             this._contract.methods
                 .allowance(owner, spender)
                 .call()
-                .then((r) => {
+                .then((r: string) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);
@@ -116,7 +116,7 @@ export default class TFC extends Web3Wrapper {
             this._contract.methods
                 .balanceOf(owner)
                 .call()
-                .then((r) => {
+                .then((r: string) => {
                     resolve(new BN(r));
                 })
                 .catch(reject);

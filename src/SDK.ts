@@ -9,7 +9,7 @@ import path from "path";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
 import { ContractSendMethod } from "web3-eth-contract";
-import { TransactionObject } from "./contracts/types";
+import { PayableTransactionObject, NonPayableTransactionObject } from "./contracts/types";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -40,7 +40,7 @@ export default class SDK extends Web3Wrapper {
                 arguments: [sender.address, sender.address],
             });
             this.sendTransaction(
-                tx as ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+                tx as ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
                 undefined,
                 {
                     from: sender.web3Account,
@@ -71,7 +71,7 @@ export default class SDK extends Web3Wrapper {
                 data: data.toString().trim(),
             });
             this.sendTransaction(
-                tx as ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+                tx as ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
                 undefined,
                 {
                     from: sender.web3Account,

@@ -2,10 +2,17 @@
 /* tslint:disable */
 
 import BN from "bn.js";
-import { Contract, ContractOptions } from "web3-eth-contract";
+import { ContractOptions } from "web3-eth-contract";
 import { EventLog } from "web3-core";
 import { EventEmitter } from "events";
-import { ContractEvent, Callback, TransactionObject, BlockType } from "./types";
+import {
+  Callback,
+  PayableTransactionObject,
+  NonPayableTransactionObject,
+  BlockType,
+  ContractEventLog,
+  BaseContract
+} from "./types";
 
 interface EventOptions {
   filter?: object;
@@ -13,73 +20,112 @@ interface EventOptions {
   topics?: string[];
 }
 
-export class AccessControl extends Contract {
+export type RoleAdminChanged = ContractEventLog<{
+  role: string;
+  previousAdminRole: string;
+  newAdminRole: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type RoleGranted = ContractEventLog<{
+  role: string;
+  account: string;
+  sender: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+export type RoleRevoked = ContractEventLog<{
+  role: string;
+  account: string;
+  sender: string;
+  0: string;
+  1: string;
+  2: string;
+}>;
+
+export interface AccessControl extends BaseContract {
   constructor(
     jsonInterface: any[],
     address?: string,
     options?: ContractOptions
-  );
+  ): AccessControl;
   clone(): AccessControl;
   methods: {
-    DEFAULT_ADMIN_ROLE(): TransactionObject<string>;
+    DEFAULT_ADMIN_ROLE(): NonPayableTransactionObject<string>;
 
-    getRoleAdmin(role: string | number[]): TransactionObject<string>;
+    getRoleAdmin(role: string | number[]): NonPayableTransactionObject<string>;
 
     getRoleMember(
       role: string | number[],
       index: number | string
-    ): TransactionObject<string>;
+    ): NonPayableTransactionObject<string>;
 
-    getRoleMemberCount(role: string | number[]): TransactionObject<string>;
+    getRoleMemberCount(
+      role: string | number[]
+    ): NonPayableTransactionObject<string>;
 
     grantRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
 
     hasRole(
       role: string | number[],
       account: string
-    ): TransactionObject<boolean>;
+    ): NonPayableTransactionObject<boolean>;
 
     renounceRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
 
     revokeRole(
       role: string | number[],
       account: string
-    ): TransactionObject<void>;
+    ): NonPayableTransactionObject<void>;
   };
   events: {
-    RoleAdminChanged: ContractEvent<{
-      role: string;
-      previousAdminRole: string;
-      newAdminRole: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    RoleGranted: ContractEvent<{
-      role: string;
-      account: string;
-      sender: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    RoleRevoked: ContractEvent<{
-      role: string;
-      account: string;
-      sender: string;
-      0: string;
-      1: string;
-      2: string;
-    }>;
-    allEvents: (
+    RoleAdminChanged(cb?: Callback<RoleAdminChanged>): EventEmitter;
+    RoleAdminChanged(
       options?: EventOptions,
-      cb?: Callback<EventLog>
-    ) => EventEmitter;
+      cb?: Callback<RoleAdminChanged>
+    ): EventEmitter;
+
+    RoleGranted(cb?: Callback<RoleGranted>): EventEmitter;
+    RoleGranted(
+      options?: EventOptions,
+      cb?: Callback<RoleGranted>
+    ): EventEmitter;
+
+    RoleRevoked(cb?: Callback<RoleRevoked>): EventEmitter;
+    RoleRevoked(
+      options?: EventOptions,
+      cb?: Callback<RoleRevoked>
+    ): EventEmitter;
+
+    allEvents(options?: EventOptions, cb?: Callback<EventLog>): EventEmitter;
   };
+
+  once(event: "RoleAdminChanged", cb: Callback<RoleAdminChanged>): void;
+  once(
+    event: "RoleAdminChanged",
+    options: EventOptions,
+    cb: Callback<RoleAdminChanged>
+  ): void;
+
+  once(event: "RoleGranted", cb: Callback<RoleGranted>): void;
+  once(
+    event: "RoleGranted",
+    options: EventOptions,
+    cb: Callback<RoleGranted>
+  ): void;
+
+  once(event: "RoleRevoked", cb: Callback<RoleRevoked>): void;
+  once(
+    event: "RoleRevoked",
+    options: EventOptions,
+    cb: Callback<RoleRevoked>
+  ): void;
 }

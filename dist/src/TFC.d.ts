@@ -1,5 +1,5 @@
 import { Address } from "./types";
-import { TFCToken } from "./contracts/TFCToken";
+import { TfcToken } from "./contracts/TFCToken";
 import Web3 from "web3";
 import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";
@@ -25,7 +25,7 @@ export default class TFC extends Web3Wrapper {
     /**
      * Get the web3.js contract object.
      */
-    get contract(): TFCToken;
+    get contract(): TfcToken;
     get abi(): Web3Utils.AbiItem[];
     /**
      * Get the name of TFC Token.
@@ -112,12 +112,9 @@ export default class TFC extends Web3Wrapper {
      * @param bundledTransfer the bundled transfer recipient and amount
      * @param sender the sender who sends the transaction and whose tokens are transferred
      */
-    one2manyTransfer(
-        bundledTransfer: {
-            recipient: Address;
-            amount: BN;
-        }[],
-        sender: Account,
-    ): Promise<void>;
+    one2manyTransfer(bundledTransfer: {
+        recipient: Address;
+        amount: BN;
+    }[], sender: Account): Promise<void>;
 }
 //# sourceMappingURL=TFC.d.ts.map

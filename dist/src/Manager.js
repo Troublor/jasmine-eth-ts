@@ -1,9 +1,7 @@
 "use strict";
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
 const fs_1 = __importDefault(require("fs"));
@@ -26,9 +24,7 @@ class Manager extends Web3Wrapper_1.default {
     constructor(web3, managerAddress) {
         super(web3);
         this._address = managerAddress;
-        this._abi = JSON.parse(
-            fs_1.default.readFileSync(path_1.default.join(__dirname, 'contracts', 'TFCManager.abi.json')).toString(),
-        );
+        this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
         this._contract = new web3.eth.Contract(this._abi, managerAddress);
     }
     /**
@@ -71,7 +67,7 @@ class Manager extends Web3Wrapper_1.default {
      * @param claimer the account to receive the claimed TFC tokens. It must be the same with the recipient of signature
      */
     async claimTFC(amount, nonce, sig, claimer) {
-        let tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
+        const tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this._address, {
                 from: claimer.web3Account,

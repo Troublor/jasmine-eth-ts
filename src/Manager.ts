@@ -3,7 +3,7 @@ import Web3Utils from "web3-utils";
 import Web3 from "web3";
 import fs from "fs";
 import path from "path";
-import { TFCManager } from "./contracts/TFCManager";
+import {TfcManager } from "./contracts/TFCManager";
 import BN from "bn.js";
 import { Address } from "./types";
 import Account from "./Account";
@@ -13,7 +13,7 @@ import Account from "./Account";
  */
 export default class Manager extends Web3Wrapper {
     private readonly _address: Address;
-    private readonly _contract: TFCManager;
+    private readonly _contract: TfcManager;
     private readonly _abi: Web3Utils.AbiItem[];
 
     /**
@@ -30,7 +30,7 @@ export default class Manager extends Web3Wrapper {
         super(web3);
         this._address = managerAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
-        this._contract = (new web3.eth.Contract(this._abi, managerAddress) as unknown) as TFCManager;
+        this._contract = (new web3.eth.Contract(this._abi, managerAddress) as unknown) as TfcManager;
     }
 
     /**

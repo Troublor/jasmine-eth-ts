@@ -1,7 +1,7 @@
 import Web3 from "web3";
 import Web3Core from "web3-core";
 import { Address } from "./types";
-import { TransactionObject } from "./contracts/types";
+import { PayableTransactionObject, NonPayableTransactionObject } from "./contracts/types";
 import { ContractSendMethod } from "web3-eth-contract";
 import BN from "bn.js";
 
@@ -27,7 +27,7 @@ export default abstract class Web3Wrapper {
     }
 
     protected async signContractTransaction(
-        transaction: TransactionObject<any> | ContractSendMethod,
+        transaction: PayableTransactionObject<any> | NonPayableTransactionObject<any> | ContractSendMethod,
         to: Address | undefined,
         options: { from: Web3Core.Account; value?: number | string | BN; gas?: number },
     ): Promise<Web3Core.SignedTransaction> {
@@ -76,7 +76,7 @@ export default abstract class Web3Wrapper {
     }
 
     protected async sendTransaction(
-        transaction: ContractSendMethod | TransactionObject<any> | Web3Core.TransactionConfig,
+        transaction: ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
         to: Address | undefined,
         options: { from: Web3Core.Account; value?: number | string | BN; gas?: number },
     ): Promise<Web3Core.TransactionReceipt> {
@@ -85,7 +85,7 @@ export default abstract class Web3Wrapper {
                 let signedTx;
                 if (transaction.hasOwnProperty("estimateGas")) {
                     signedTx = await this.signContractTransaction(
-                        transaction as TransactionObject<any> | ContractSendMethod,
+                        transaction as PayableTransactionObject<any> | NonPayableTransactionObject<any> | ContractSendMethod,
                         to,
                         options,
                     );
