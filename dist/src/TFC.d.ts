@@ -10,9 +10,9 @@ import Account from "./Account";
  *
  */
 export default class TFC extends Web3Wrapper {
-    private readonly _address;
-    private readonly _contract;
-    private readonly _abi;
+    readonly address: Address;
+    readonly _contract: TfcToken;
+    readonly _abi: Web3Utils.AbiItem[];
     /**
      * Construct an TFC object using web3 instance, address of contract
      * Usually this constructor should not be called.

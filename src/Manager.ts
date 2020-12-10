@@ -12,9 +12,9 @@ import Account from "./Account";
  * TFC manager represent the TFCManager smart contract, which serves as a proxy for TFC users to claim (withdraw) TFC tokens.
  */
 export default class Manager extends Web3Wrapper {
-    private readonly _address: Address;
-    private readonly _contract: TfcManager;
-    private readonly _abi: Web3Utils.AbiItem[];
+    public readonly address: Address;
+    public readonly contract: TfcManager;
+    public readonly abi: Web3Utils.AbiItem[];
 
     /**
      * Construct an TFCManager object representing the TFCManager smart contract,
@@ -28,23 +28,23 @@ export default class Manager extends Web3Wrapper {
      */
     constructor(web3: Web3, managerAddress: Address) {
         super(web3);
-        this._address = managerAddress;
-        this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
-        this._contract = (new web3.eth.Contract(this._abi, managerAddress) as unknown) as TfcManager;
+        this.address = managerAddress;
+        this.abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
+        this.contract = (new web3.eth.Contract(this.abi, managerAddress) as unknown) as TfcManager;
     }
 
     /**
      * Get the address of the TFCToken ERC20 contract, which are created/managed by the manager.
      */
     public async tfcAddress(): Promise<Address> {
-        return this._contract.methods.tfcToken().call();
+        return this.contract.methods.tfcToken().call();
     }
 
     /**
      * Get the address of the signer who have the privilege to authorize users to claim TFC tokens
      */
     public async signer(): Promise<Address> {
-        return this._contract.methods.signer().call();
+        return this.contract.methods.signer().call();
     }
 
     /**
@@ -52,7 +52,7 @@ export default class Manager extends Web3Wrapper {
      * @param nonce
      */
     public async nonceUsed(nonce: BN): Promise<boolean> {
-        return this._contract.methods.usedNonces(nonce.toString()).call();
+        return this.contract.methods.usedNonces(nonce.toString()).call();
     }
 
     /**
@@ -77,9 +77,9 @@ export default class Manager extends Web3Wrapper {
      * @param claimer the account to receive the claimed TFC tokens. It must be the same with the recipient of signature
      */
     public async claimTFC(amount: BN, nonce: BN, sig: string, claimer: Account): Promise<void> {
-        const tx = this._contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
+        const tx = this.contract.methods.claimTFC(amount.toString(), nonce.toString(), sig);
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: claimer.web3Account,
             })
                 .then(() => resolve())
@@ -96,7 +96,7 @@ export default class Manager extends Web3Wrapper {
      * @param signer the account who has the privilege to authorize TFC claim
      */
     public signTFCClaim(recipient: Address, amount: BN, nonce: BN, signer: Account): string {
-        const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this._address) as string;
+        const hash = this.web3.utils.soliditySha3(recipient, amount, nonce, this.address) as string;
         return this.web3.eth.accounts.sign(hash, signer.privateKey).signature;
     }
 

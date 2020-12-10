@@ -22,7 +22,7 @@ class TFC extends Web3Wrapper_1.default {
      */
     constructor(web3, tfcAddress) {
         super(web3);
-        this._address = tfcAddress;
+        this.address = tfcAddress;
         this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
         this._contract = new web3.eth.Contract(this._abi, tfcAddress);
     }
@@ -143,7 +143,7 @@ class TFC extends Web3Wrapper_1.default {
     async transfer(to, amount, sender) {
         const tx = this._contract.methods.transfer(to, amount.toString());
         return new Promise((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -164,7 +164,7 @@ class TFC extends Web3Wrapper_1.default {
     async transferFrom(from, to, amount, sender) {
         const tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -181,7 +181,7 @@ class TFC extends Web3Wrapper_1.default {
     async approve(spender, amount, sender) {
         const tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -199,7 +199,7 @@ class TFC extends Web3Wrapper_1.default {
     async mint(to, amount, sender) {
         const tx = this._contract.methods.mint(to, amount.toString());
         return new Promise((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -221,7 +221,7 @@ class TFC extends Web3Wrapper_1.default {
         }
         const tx = this._contract.methods.one2manyTransfer(recipients, amounts.map((a) => a.toString()));
         return new Promise((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())

@@ -13,9 +13,9 @@ import Account from "./Account";
  *
  */
 export default class TFC extends Web3Wrapper {
-    private readonly _address: Address;
-    private readonly _contract: TfcToken;
-    private readonly _abi: Web3Utils.AbiItem[];
+    public readonly address: Address;
+    public readonly _contract: TfcToken;
+    public readonly _abi: Web3Utils.AbiItem[];
 
     /**
      * Construct an TFC object using web3 instance, address of contract
@@ -27,7 +27,7 @@ export default class TFC extends Web3Wrapper {
      */
     constructor(web3: Web3, tfcAddress: Address) {
         super(web3);
-        this._address = tfcAddress;
+        this.address = tfcAddress;
         this._abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
         this._contract = (new web3.eth.Contract(this._abi, tfcAddress) as unknown) as TfcToken;
     }
@@ -159,7 +159,7 @@ export default class TFC extends Web3Wrapper {
     public async transfer(to: Address, amount: BN, sender: Account): Promise<void> {
         const tx = this._contract.methods.transfer(to, amount.toString());
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -181,7 +181,7 @@ export default class TFC extends Web3Wrapper {
     public async transferFrom(from: Address, to: Address, amount: BN, sender: Account): Promise<void> {
         const tx = this._contract.methods.transferFrom(from, to, amount.toString());
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -199,7 +199,7 @@ export default class TFC extends Web3Wrapper {
     public async approve(spender: Address, amount: BN, sender: Account): Promise<void> {
         const tx = this._contract.methods.approve(spender, amount.toString());
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -218,7 +218,7 @@ export default class TFC extends Web3Wrapper {
     public async mint(to: Address, amount: BN, sender: Account): Promise<void> {
         const tx = this._contract.methods.mint(to, amount.toString());
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())
@@ -247,7 +247,7 @@ export default class TFC extends Web3Wrapper {
             amounts.map((a) => a.toString()),
         );
         return new Promise<void>((resolve, reject) => {
-            this.sendTransaction(tx, this._address, {
+            this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
             })
                 .then(() => resolve())

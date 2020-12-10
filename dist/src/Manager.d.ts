@@ -1,5 +1,7 @@
 import Web3Wrapper from "./Web3Wrapper";
+import Web3Utils from "web3-utils";
 import Web3 from "web3";
+import { TfcManager } from "./contracts/TFCManager";
 import BN from "bn.js";
 import { Address } from "./types";
 import Account from "./Account";
@@ -7,9 +9,9 @@ import Account from "./Account";
  * TFC manager represent the TFCManager smart contract, which serves as a proxy for TFC users to claim (withdraw) TFC tokens.
  */
 export default class Manager extends Web3Wrapper {
-    private readonly _address;
-    private readonly _contract;
-    private readonly _abi;
+    readonly address: Address;
+    readonly contract: TfcManager;
+    readonly abi: Web3Utils.AbiItem[];
     /**
      * Construct an TFCManager object representing the TFCManager smart contract,
      * using web3 instance, address of contract
