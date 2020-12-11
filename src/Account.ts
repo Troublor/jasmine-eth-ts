@@ -1,7 +1,6 @@
 import { Address } from "./types";
 import Web3Wrapper from "./Web3Wrapper";
 import Web3 from "web3";
-import TFC from "./TFC";
 import * as Web3Core from "web3-core";
 
 /**

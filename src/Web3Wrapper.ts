@@ -76,16 +76,25 @@ export default abstract class Web3Wrapper {
     }
 
     protected async sendTransaction(
-        transaction: ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
+        transaction:
+            | ContractSendMethod
+            | PayableTransactionObject<any>
+            | NonPayableTransactionObject<any>
+            | Web3Core.TransactionConfig,
         to: Address | undefined,
         options: { from: Web3Core.Account; value?: number | string | BN; gas?: number },
     ): Promise<Web3Core.TransactionReceipt> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<Web3Core.TransactionReceipt>(async (resolve, reject) => {
             try {
                 let signedTx;
+                // eslint-disable-next-line no-prototype-builtins
                 if (transaction.hasOwnProperty("estimateGas")) {
                     signedTx = await this.signContractTransaction(
-                        transaction as PayableTransactionObject<any> | NonPayableTransactionObject<any> | ContractSendMethod,
+                        transaction as
+                            | PayableTransactionObject<any>
+                            | NonPayableTransactionObject<any>
+                            | ContractSendMethod,
                         to,
                         options,
                     );
@@ -99,8 +108,10 @@ export default abstract class Web3Wrapper {
                         return;
                     }
                     if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
                         resolve(receipt);
@@ -112,8 +123,10 @@ export default abstract class Web3Wrapper {
                         return;
                     }
                     if (!this._confirmationRequirement) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
                         resolve(receipt);

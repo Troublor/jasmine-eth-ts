@@ -11,7 +11,7 @@ import Web3 from "web3";
 export function validateAndConvertAddress(payload: string): Address | null {
     if (Web3.utils.isAddress(payload)) {
         if (!payload.startsWith("0x")) {
-            payload = '0x' + payload;
+            payload = "0x" + payload;
         }
         return payload as Address;
     } else {

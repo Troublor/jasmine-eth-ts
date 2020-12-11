@@ -1,5 +1,5 @@
-import {Address} from "./types";
-import {TfcToken} from "./contracts/TFCToken";
+import { Address } from "./types";
+import { TfcToken } from "./contracts/TFCToken";
 import Web3 from "web3";
 import Web3Utils from "web3-utils";
 import Web3Wrapper from "./Web3Wrapper";

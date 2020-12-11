@@ -1,6 +1,6 @@
 import Web3 from "web3";
 import TFC from "./TFC";
-import {Address} from "./types";
+import { Address } from "./types";
 import Account from "./Account";
 import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
@@ -8,8 +8,8 @@ import fs from "fs";
 import path from "path";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
-import {ContractSendMethod} from "web3-eth-contract";
-import {PayableTransactionObject, NonPayableTransactionObject} from "./contracts/types";
+import { ContractSendMethod } from "web3-eth-contract";
+import { PayableTransactionObject, NonPayableTransactionObject } from "./contracts/types";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -31,6 +31,7 @@ export default class SDK extends Web3Wrapper {
      * @param sender the transaction sender who creates the contract
      */
     public deployTFC(sender: Account): Promise<Address> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<Address>(async (resolve, reject) => {
             const abi = JSON.parse(fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
             const data: Buffer = fs.readFileSync(path.join(__dirname, "contracts", "TFCToken.bin"));
@@ -40,7 +41,11 @@ export default class SDK extends Web3Wrapper {
                 arguments: [sender.address, sender.address],
             });
             this.sendTransaction(
-                tx as ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
+                tx as
+                    | ContractSendMethod
+                    | PayableTransactionObject<any>
+                    | NonPayableTransactionObject<any>
+                    | Web3Core.TransactionConfig,
                 undefined,
                 {
                     from: sender.web3Account,
@@ -61,6 +66,7 @@ export default class SDK extends Web3Wrapper {
      * @param sender the account used to deploy
      */
     public deployManager(sender: Account): Promise<Address> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<Address>(async (resolve, reject) => {
             const abi = JSON.parse(
                 fs.readFileSync(path.join(__dirname, "contracts", "TFCManager.abi.json")).toString(),
@@ -71,7 +77,11 @@ export default class SDK extends Web3Wrapper {
                 data: data.toString().trim(),
             });
             this.sendTransaction(
-                tx as ContractSendMethod | PayableTransactionObject<any> | NonPayableTransactionObject<any> | Web3Core.TransactionConfig,
+                tx as
+                    | ContractSendMethod
+                    | PayableTransactionObject<any>
+                    | NonPayableTransactionObject<any>
+                    | Web3Core.TransactionConfig,
                 undefined,
                 {
                     from: sender.web3Account,
@@ -119,7 +129,7 @@ export default class SDK extends Web3Wrapper {
      * Be sure to appropriately save the private key of the account to be able to retrieve next time.
      */
     public createAccount(): Account {
-        const {privateKey} = this.web3.eth.accounts.create();
+        const { privateKey } = this.web3.eth.accounts.create();
         return new Account(this.web3, privateKey);
     }
 
@@ -149,6 +159,7 @@ export default class SDK extends Web3Wrapper {
      * @param sender sender account.
      */
     public transfer(to: Address, amount: BN, sender: Account): Promise<void> {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise<void>(async (resolve, reject) => {
             const tx = {
                 to: to,
@@ -156,7 +167,7 @@ export default class SDK extends Web3Wrapper {
                 from: sender.address,
                 // nonce: await this.web3.eth.getTransactionCount(sender.address, "pending"),
             };
-            this.sendTransaction(tx, to, {from: sender.web3Account})
+            this.sendTransaction(tx, to, { from: sender.web3Account })
                 .then(() => {
                     resolve();
                 })
@@ -170,7 +181,7 @@ export default class SDK extends Web3Wrapper {
      * @param amount
      */
     public wei2ether(amount: BN): BN {
-        return new BN(this.web3.utils.fromWei(amount, 'ether'));
+        return new BN(this.web3.utils.fromWei(amount, "ether"));
     }
 
     /**
@@ -179,6 +190,6 @@ export default class SDK extends Web3Wrapper {
      * @param amount
      */
     public ether2wei(amount: BN): BN {
-        return new BN(this.web3.utils.toWei(amount, 'ether'));
+        return new BN(this.web3.utils.toWei(amount, "ether"));
     }
 }

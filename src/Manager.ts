@@ -3,9 +3,9 @@ import Web3Utils from "web3-utils";
 import Web3 from "web3";
 import fs from "fs";
 import path from "path";
-import {TfcManager} from "./contracts/TFCManager";
+import { TfcManager } from "./contracts/TFCManager";
 import BN from "bn.js";
-import {Address} from "./types";
+import { Address } from "./types";
 import Account from "./Account";
 
 /**
