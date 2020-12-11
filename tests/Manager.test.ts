@@ -22,14 +22,14 @@ describe("Manager", () => {
         tfc = sdk.getTFC(await manager.tfcAddress());
     });
 
-    it('should be able to sign claim message', async function () {
+    it("should be able to sign claim message", async function () {
         const [admin, user] = accounts;
         const nonce = await manager.getUnusedNonce();
         const sig = manager.signTFCClaim(user.address, new BN("1000000000000000000"), nonce, admin);
         expect(sig).to.not.be.undefined;
     });
 
-    it('should be able to do a valid TFC claim', async function () {
+    it("should be able to do a valid TFC claim", async function () {
         const [admin, user] = accounts;
         const amount = new BN("1000000000000000000");
         let nonce = await manager.getUnusedNonce();
@@ -45,7 +45,7 @@ describe("Manager", () => {
         expect(balance.toString()).to.be.equal(amount.mul(new BN(2)).toString());
     });
 
-    it('should allow deployer to mint', async function () {
+    it("should allow deployer to mint", async function () {
         const originalBalance = await tfc.balanceOf(accounts[0].address);
         await tfc.mint(accounts[0].address, new BN(100), accounts[0]);
         const balance = await tfc.balanceOf(accounts[0].address);

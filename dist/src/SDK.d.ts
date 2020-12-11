@@ -5,6 +5,7 @@ import Web3Wrapper from "./Web3Wrapper";
 import BN from "bn.js";
 import Web3Core from "web3-core";
 import Manager from "./Manager";
+import { Version } from "./version";
 /**
  * SDK class for jasmine ethereum client.
  */
@@ -16,6 +17,7 @@ export default class SDK extends Web3Wrapper {
      * @param ethereumEndpoint url or web3.js provider
      */
     constructor(ethereumEndpoint: string | Web3Core.provider);
+    get version(): Version;
     /**
      * Deploy TFC ERC20 contract on the underling blockchain.
      *

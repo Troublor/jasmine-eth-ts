@@ -9,6 +9,7 @@ describe("Account", () => {
 
     beforeEach(() => {
         const mockEth = new MockEthereum();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         web3 = new Web3(mockEth.endpoint);
         predefinedPrivateKeys = mockEth.predefinedPrivateKeys;
@@ -19,7 +20,7 @@ describe("Account", () => {
         predefinedPrivateKeys = undefined;
     });
 
-    it('should be constructed correctly', function () {
+    it("should be constructed correctly", function () {
         const account = new Account(web3 as Web3, (predefinedPrivateKeys as string[])[0]);
         expect(account.privateKey).to.be.equal((predefinedPrivateKeys as string[])[0]);
     });

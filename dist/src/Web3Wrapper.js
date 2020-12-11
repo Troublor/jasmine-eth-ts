@@ -54,9 +54,11 @@ class Web3Wrapper {
         return await options.from.signTransaction(transaction);
     }
     async sendTransaction(transaction, to, options) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             try {
                 let signedTx;
+                // eslint-disable-next-line no-prototype-builtins
                 if (transaction.hasOwnProperty("estimateGas")) {
                     signedTx = await this.signContractTransaction(transaction, to, options);
                 }
@@ -70,8 +72,10 @@ class Web3Wrapper {
                         return;
                     }
                     if (this._confirmationRequirement && confNumber >= this._confirmationRequirement) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
                         resolve(receipt);
@@ -83,8 +87,10 @@ class Web3Wrapper {
                         return;
                     }
                     if (!this._confirmationRequirement) {
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("receipt");
+                        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                         // @ts-ignore
                         promiEvent.removeAllListeners("confirmation");
                         resolve(receipt);

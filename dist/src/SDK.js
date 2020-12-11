@@ -11,6 +11,7 @@ const bn_js_1 = __importDefault(require("bn.js"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const Manager_1 = __importDefault(require("./Manager"));
+const version_1 = require("./version");
 /**
  * SDK class for jasmine ethereum client.
  */
@@ -22,7 +23,15 @@ class SDK extends Web3Wrapper_1.default {
      * @param ethereumEndpoint url or web3.js provider
      */
     constructor(ethereumEndpoint) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         super(new web3_1.default(ethereumEndpoint));
+    }
+    get version() {
+        return {
+            versionStr: version_1.versionStr(),
+            versionNum: version_1.versionNum(),
+        };
     }
     /**
      * Deploy TFC ERC20 contract on the underling blockchain.
@@ -30,6 +39,7 @@ class SDK extends Web3Wrapper_1.default {
      * @param sender the transaction sender who creates the contract
      */
     deployTFC(sender) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             const abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
             const data = fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.bin"));
@@ -55,6 +65,7 @@ class SDK extends Web3Wrapper_1.default {
      * @param sender the account used to deploy
      */
     deployManager(sender) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             const abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
             const data = fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.bin"));
@@ -131,6 +142,7 @@ class SDK extends Web3Wrapper_1.default {
      * @param sender sender account.
      */
     transfer(to, amount, sender) {
+        // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
             const tx = {
                 to: to,
@@ -150,7 +162,7 @@ class SDK extends Web3Wrapper_1.default {
      * @param amount
      */
     wei2ether(amount) {
-        return new bn_js_1.default(this.web3.utils.fromWei(amount, 'ether'));
+        return new bn_js_1.default(this.web3.utils.fromWei(amount, "ether"));
     }
     /**
      * Convert ether unit to wei unit
@@ -158,7 +170,7 @@ class SDK extends Web3Wrapper_1.default {
      * @param amount
      */
     ether2wei(amount) {
-        return new bn_js_1.default(this.web3.utils.toWei(amount, 'ether'));
+        return new bn_js_1.default(this.web3.utils.toWei(amount, "ether"));
     }
 }
 exports.default = SDK;

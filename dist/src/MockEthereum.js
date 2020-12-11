@@ -59,14 +59,14 @@ class MockEthereum {
         this.endpoint = this.server.provider;
     }
     async listenOn(host, port) {
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             this.server.listen(port, host);
             resolve();
         });
     }
     async stopListen() {
         return new Promise((resolve, reject) => {
-            this.server.close(err => {
+            this.server.close((err) => {
                 if (err) {
                     reject(err);
                 }
