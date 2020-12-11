@@ -12,6 +12,7 @@ describe("Account", () => {
     let predefinedPrivateKeys;
     beforeEach(() => {
         const mockEth = new MockEthereum_1.default();
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         web3 = new web3_1.default(mockEth.endpoint);
         predefinedPrivateKeys = mockEth.predefinedPrivateKeys;
@@ -20,7 +21,7 @@ describe("Account", () => {
         web3 = undefined;
         predefinedPrivateKeys = undefined;
     });
-    it('should be constructed correctly', function () {
+    it("should be constructed correctly", function () {
         const account = new Account_1.default(web3, predefinedPrivateKeys[0]);
         chai_1.expect(account.privateKey).to.be.equal(predefinedPrivateKeys[0]);
     });

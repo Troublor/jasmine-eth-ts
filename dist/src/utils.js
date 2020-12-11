@@ -15,7 +15,7 @@ const web3_1 = __importDefault(require("web3"));
 function validateAndConvertAddress(payload) {
     if (web3_1.default.utils.isAddress(payload)) {
         if (!payload.startsWith("0x")) {
-            payload = '0x' + payload;
+            payload = "0x" + payload;
         }
         return payload;
     }

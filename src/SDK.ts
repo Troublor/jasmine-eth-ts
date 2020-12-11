@@ -10,6 +10,7 @@ import Web3Core from "web3-core";
 import Manager from "./Manager";
 import { ContractSendMethod } from "web3-eth-contract";
 import { PayableTransactionObject, NonPayableTransactionObject } from "./contracts/types";
+import { Version, versionNum, versionStr } from "./version";
 
 /**
  * SDK class for jasmine ethereum client.
@@ -25,6 +26,13 @@ export default class SDK extends Web3Wrapper {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         super(new Web3(ethereumEndpoint));
+    }
+
+    public get version(): Version {
+        return {
+            versionStr: versionStr(),
+            versionNum: versionNum(),
+        };
     }
 
     /**

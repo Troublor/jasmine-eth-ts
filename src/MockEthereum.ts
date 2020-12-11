@@ -51,7 +51,7 @@ export default class MockEthereum {
     /**
      * Construct a mock Ethereum environment, where each of the predefined privateKeys are initially faucet 100 Ethers
      */
-    constructor(options?: ganacheCore.IServerOptions) {
+    constructor(options: ganacheCore.IServerOptions = {}) {
         const accounts = this.predefinedPrivateKeys.map((key) => {
             return {
                 balance: "0x56BC75E2D63100000",
