@@ -15,6 +15,7 @@ module.exports = {
         ecmaVersion: 12,
         sourceType: "module",
     },
+    ignorePatterns: ["dist", "src/contracts", "docs", "node_modules"],
     plugins: ["@typescript-eslint"],
     rules: {
         indent: ["error", 4],

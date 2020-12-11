@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
 const fs_1 = __importDefault(require("fs"));
@@ -23,7 +25,9 @@ class TFC extends Web3Wrapper_1.default {
     constructor(web3, tfcAddress) {
         super(web3);
         this.address = tfcAddress;
-        this._abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
+        this._abi = JSON.parse(
+            fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString(),
+        );
         this._contract = new web3.eth.Contract(this._abi, tfcAddress);
     }
     /**
@@ -56,8 +60,8 @@ class TFC extends Web3Wrapper_1.default {
                 .decimals()
                 .call()
                 .then((r) => {
-                resolve(parseInt(r));
-            })
+                    resolve(parseInt(r));
+                })
                 .catch(reject);
         });
     }
@@ -70,8 +74,8 @@ class TFC extends Web3Wrapper_1.default {
                 .totalSupply()
                 .call()
                 .then((r) => {
-                resolve(new bn_js_1.default(r));
-            })
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -88,8 +92,8 @@ class TFC extends Web3Wrapper_1.default {
                 .allowance(owner, spender)
                 .call()
                 .then((r) => {
-                resolve(new bn_js_1.default(r));
-            })
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -104,8 +108,8 @@ class TFC extends Web3Wrapper_1.default {
                 .balanceOf(owner)
                 .call()
                 .then((r) => {
-                resolve(new bn_js_1.default(r));
-            })
+                    resolve(new bn_js_1.default(r));
+                })
                 .catch(reject);
         });
     }
@@ -219,7 +223,10 @@ class TFC extends Web3Wrapper_1.default {
             recipients.push(t.recipient);
             amounts.push(t.amount);
         }
-        const tx = this._contract.methods.one2manyTransfer(recipients, amounts.map((a) => a.toString()));
+        const tx = this._contract.methods.one2manyTransfer(
+            recipients,
+            amounts.map((a) => a.toString()),
+        );
         return new Promise((resolve, reject) => {
             this.sendTransaction(tx, this.address, {
                 from: sender.web3Account,
@@ -235,8 +242,7 @@ class TFC extends Web3Wrapper_1.default {
         try {
             const symbol = await this.symbol();
             return symbol === "TFC";
-        }
-        catch (e) {
+        } catch (e) {
             return false;
         }
     }

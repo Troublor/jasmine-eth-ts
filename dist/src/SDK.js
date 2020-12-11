@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const web3_1 = __importDefault(require("web3"));
 const TFC_1 = __importDefault(require("./TFC"));
@@ -41,7 +43,9 @@ class SDK extends Web3Wrapper_1.default {
     deployTFC(sender) {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
-            const abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString());
+            const abi = JSON.parse(
+                fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.abi.json")).toString(),
+            );
             const data = fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCToken.bin"));
             const contract = new this.web3.eth.Contract(abi);
             const tx = contract.deploy({
@@ -53,8 +57,8 @@ class SDK extends Web3Wrapper_1.default {
                 gas: 6000000,
             })
                 .then((receipt) => {
-                resolve(receipt.contractAddress);
-            })
+                    resolve(receipt.contractAddress);
+                })
                 .catch(reject);
         });
     }
@@ -67,7 +71,11 @@ class SDK extends Web3Wrapper_1.default {
     deployManager(sender) {
         // eslint-disable-next-line no-async-promise-executor
         return new Promise(async (resolve, reject) => {
-            const abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
+            const abi = JSON.parse(
+                fs_1.default
+                    .readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json"))
+                    .toString(),
+            );
             const data = fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.bin"));
             const contract = new this.web3.eth.Contract(abi);
             const tx = contract.deploy({
@@ -78,8 +86,8 @@ class SDK extends Web3Wrapper_1.default {
                 gas: 6000000,
             })
                 .then(async (receipt) => {
-                resolve(receipt.contractAddress);
-            })
+                    resolve(receipt.contractAddress);
+                })
                 .catch(reject);
         });
     }
@@ -128,8 +136,8 @@ class SDK extends Web3Wrapper_1.default {
             this.web3.eth
                 .getBalance(address)
                 .then((bal) => {
-                resolve(new bn_js_1.default(bal));
-            })
+                    resolve(new bn_js_1.default(bal));
+                })
                 .catch(reject);
         });
     }
@@ -151,8 +159,8 @@ class SDK extends Web3Wrapper_1.default {
             };
             this.sendTransaction(tx, to, { from: sender.web3Account })
                 .then(() => {
-                resolve();
-            })
+                    resolve();
+                })
                 .catch(reject);
         });
     }

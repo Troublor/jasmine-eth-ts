@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const ganache_core_1 = __importDefault(require("ganache-core"));
 /**
@@ -11,7 +13,7 @@ class MockEthereum {
     /**
      * Construct a mock Ethereum environment, where each of the predefined privateKeys are initially faucet 100 Ethers
      */
-    constructor(options) {
+    constructor(options = {}) {
         /**
          * Predefined account privateKeys
          */
@@ -53,9 +55,11 @@ class MockEthereum {
                 secretKey: key,
             };
         });
-        this.server = ganache_core_1.default.server(Object.assign(options, {
-            accounts: accounts,
-        }));
+        this.server = ganache_core_1.default.server(
+            Object.assign(options, {
+                accounts: accounts,
+            }),
+        );
         this.endpoint = this.server.provider;
     }
     async listenOn(host, port) {

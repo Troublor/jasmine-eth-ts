@@ -1,7 +1,9 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
+var __importDefault =
+    (this && this.__importDefault) ||
+    function (mod) {
+        return mod && mod.__esModule ? mod : { default: mod };
+    };
 Object.defineProperty(exports, "__esModule", { value: true });
 const chai_1 = require("chai");
 const SDK_1 = __importDefault(require("../src/SDK"));
@@ -12,7 +14,9 @@ describe("TFC", function () {
     let sdk;
     let admin;
     let tfcAddress;
-    const initialSupply = new bn_js_1.default(20).mul(new bn_js_1.default("100000000").mul(new bn_js_1.default("1000000000000000000")));
+    const initialSupply = new bn_js_1.default(20).mul(
+        new bn_js_1.default("100000000").mul(new bn_js_1.default("1000000000000000000")),
+    );
     let tfc;
     let account1;
     let accounts;
@@ -29,7 +33,11 @@ describe("TFC", function () {
         account1 = accounts[1];
         // make initial supply
         for (const acc of accounts.slice(0, 20)) {
-            await tfc.mint(acc.address, new bn_js_1.default("100000000").mul(new bn_js_1.default("1000000000000000000")), admin);
+            await tfc.mint(
+                acc.address,
+                new bn_js_1.default("100000000").mul(new bn_js_1.default("1000000000000000000")),
+                admin,
+            );
         }
     });
     afterEach(() => {

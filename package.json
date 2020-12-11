@@ -1,6 +1,6 @@
 {
   "name": "jasmine-eth-ts",
-  "version": "1.0.15",
+  "version": "1.0.16",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/Troublor/jasmine-eth-ts.git",
@@ -9,8 +9,9 @@
   "scripts": {
     "test": "mocha --require ts-node/register tests/**/*.test.ts",
     "build": "tsc && cp src/contracts/* dist/src/contracts",
-    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode library index.ts",
-    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix"
+    "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode modules index.ts",
+    "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
+    "publish": "yarn publish"
   },
   "dependencies": {
     "bn.js": "^5.1.3",

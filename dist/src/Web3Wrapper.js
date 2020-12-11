@@ -16,9 +16,7 @@ class Web3Wrapper {
     }
     async signContractTransaction(transaction, to, options) {
         const nonce = await this._web3.eth.getTransactionCount(options.from.address);
-        const gasLimit = options.gas
-            ? options.gas
-            : await transaction.estimateGas({ from: options.from.address });
+        const gasLimit = options.gas ? options.gas : await transaction.estimateGas({ from: options.from.address });
         const gasPrice = await this._web3.eth.getGasPrice();
         const rawTx = {
             from: options.from.address,
@@ -61,8 +59,7 @@ class Web3Wrapper {
                 // eslint-disable-next-line no-prototype-builtins
                 if (transaction.hasOwnProperty("estimateGas")) {
                     signedTx = await this.signContractTransaction(transaction, to, options);
-                }
-                else {
+                } else {
                     signedTx = await this.signSimpleTransaction(transaction, to, options);
                 }
                 const promiEvent = this.web3.eth.sendSignedTransaction(signedTx.rawTransaction);
@@ -101,8 +98,7 @@ class Web3Wrapper {
                     .once("receipt", receiptHandler)
                     .on("confirmation", confirmationHandler)
                     .once("error", reject);
-            }
-            catch (e) {
+            } catch (e) {
                 reject(e);
             }
         });

@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<title>jasmine-eth-ts</title>
-	<meta name="description" content="">
+	<meta name="description" content="Documentation for jasmine-eth-ts">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
 </head>
@@ -13,7 +13,7 @@
 	<div class="tsd-page-toolbar">
 		<div class="container">
 			<div class="table-wrap">
-				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.json" data-base=".">
 					<div class="field">
 						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
 						<input id="tsd-search-field" type="text" />
@@ -83,10 +83,10 @@
 					<h2>Usage</h2>
 				</a>
 				<p>Import module:</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> SDK, {Account, TFC} <span class="hljs-keyword">from</span> <span class="hljs-string">"jasmine-eth-ts"</span>;</code></pre>
+				<pre><code class="language-typescript"><span class="hljs-keyword">import</span> SDK, {Account, TFC} <span class="hljs-keyword">from</span> <span class="hljs-string">&quot;jasmine-eth-ts&quot;</span>;</code></pre>
 				<p>The entry point should <code>SDK</code> class.
 				First thing to do is to construct an <code>SDK</code> object using an Ethereum endpoint (e.g. local private chain <code>http://localhost:8545</code>).</p>
-				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> sdk = <span class="hljs-keyword">new</span> SDK(<span class="hljs-string">"http://localhost:8545"</span>);</code></pre>
+				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> sdk = <span class="hljs-keyword">new</span> SDK(<span class="hljs-string">&quot;http://localhost:8545&quot;</span>);</code></pre>
 				<p>For testing purposes, we provide a <code>MockEthereum</code> class which wrapper ganache-core to provide a test environment to use <code>SDK</code>.
 				Get the predefined accounts (each has 100 Ether) and endpoint:</p>
 				<pre><code class="language-typescript"><span class="hljs-keyword">let</span> mockEth = <span class="hljs-keyword">new</span> MockEthereum();
@@ -117,34 +117,46 @@ mockEth.endpoint;</code></pre>
 					<li class="globals  ">
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
+					<li class="label tsd-is-external">
+						<span>Internals</span>
+					</li>
+					<li class=" tsd-kind-module">
+						<a href="modules/_index_.html">&quot;index&quot;</a>
+					</li>
+					<li class="label tsd-is-external">
+						<span>Externals</span>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_account_.html">&quot;src/<wbr>Account&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_manager_.html">&quot;src/<wbr>Manager&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_mockethereum_.html">&quot;src/<wbr>Mock<wbr>Ethereum&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_sdk_.html">&quot;src/SDK&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_tfc_.html">&quot;src/TFC&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_web3wrapper_.html">&quot;src/<wbr>Web3<wbr>Wrapper&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_types_.html">&quot;src/types&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_utils_.html">&quot;src/utils&quot;</a>
+					</li>
+					<li class=" tsd-kind-module tsd-is-external">
+						<a href="modules/_src_version_.html">&quot;src/version&quot;</a>
+					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class">
-						<a href="classes/account.html" class="tsd-kind-icon">Account</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/manager.html" class="tsd-kind-icon">Manager</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/mockethereum.html" class="tsd-kind-icon">Mock<wbr>Ethereum</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/sdk.html" class="tsd-kind-icon">SDK</a>
-					</li>
-					<li class=" tsd-kind-class">
-						<a href="classes/tfc.html" class="tsd-kind-icon">TFC</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#address" class="tsd-kind-icon">Address</a>
-					</li>
-					<li class=" tsd-kind-type-alias">
-						<a href="globals.html#hash" class="tsd-kind-icon">Hash</a>
-					</li>
-					<li class=" tsd-kind-function">
-						<a href="globals.html#validateandconvertaddress" class="tsd-kind-icon">validate<wbr>And<wbr>Convert<wbr>Address</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
@@ -154,59 +166,6 @@ mockEth.endpoint;</code></pre>
 	<div class="container">
 		<h2>Legend</h2>
 		<div class="tsd-legend-group">
-			<ul class="tsd-legend">
-				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
-				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
-				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
-				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
-				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
-				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
-				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
-				<li class="tsd-kind-type-alias tsd-has-type-parameter"><span class="tsd-kind-icon">Type alias with type parameter</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
-				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
-				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
-				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
-				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
-				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
-				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
-				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
-			</ul>
-			<ul class="tsd-legend">
-				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
-				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
-			</ul>
 		</div>
 	</div>
 </footer>
@@ -215,6 +174,5 @@ mockEth.endpoint;</code></pre>
 </div>
 <div class="overlay"></div>
 <script src="assets/js/main.js"></script>
-<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
 </body>
 </html>
