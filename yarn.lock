@@ -5580,6 +5580,7 @@ fsevents@~2.1.2:
     mocha: ^8.1.3
     nyc: ^15.1.0
     prettier: ^2.2.1
+    root-require: ^0.3.1
     ts-node: ^9.0.0
     typechain: ^2.0.0
     typedoc: ^0.17.0-3
@@ -7199,6 +7200,13 @@ fsevents@~2.1.2:
   languageName: node
   linkType: hard
 
+"packpath@npm:~0.1.0":
+  version: 0.1.0
+  resolution: "packpath@npm:0.1.0"
+  checksum: 27c27e0218536e8decf14d912f4532dfd0a984aed6fb54fc891f385f051a0bf8238288d1dfdd35b05903afa43bbf7f573c107a14d8f38b468757975253c08092
+  languageName: node
+  linkType: hard
+
 "parent-module@npm:^1.0.0":
   version: 1.0.1
   resolution: "parent-module@npm:1.0.1"
@@ -8027,6 +8035,15 @@ resolve@~1.17.0:
   bin:
     rlp: bin/rlp
   checksum: 58777508e10d6ec39efcb14f85fd80dc07f549a60dfc51f1b59c62a5e1d32ef92ff6721f77aa767dfb41f2c5027c408c79dcbd1c63aa38915714969600ecd9d7
+  languageName: node
+  linkType: hard
+
+"root-require@npm:^0.3.1":
+  version: 0.3.1
+  resolution: "root-require@npm:0.3.1"
+  dependencies:
+    packpath: ~0.1.0
+  checksum: 76910dde48b70bc7d2ae35326dac3a0c125bc2f9f2127b0c63ef199c804d79571456caa9fee3490cb014dab92518116bbc8fe1c329219dec627b6d4e73420732
   languageName: node
   linkType: hard
 

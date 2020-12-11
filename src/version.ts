@@ -1,7 +1,5 @@
-import * as fs from "fs";
-import * as path from "path";
-
-const info = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "package.json"), { encoding: "utf-8" }));
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const info = require("root-require")("./package.json");
 const major = parseInt(info.version.split(".")[0]);
 const minor = parseInt(info.version.split(".")[1]);
 const patch = parseInt(info.version.split(".")[2]);
@@ -12,7 +10,7 @@ export interface Version {
 }
 
 export function versionStr(): string {
-    return `v${major}.${minor},${patch}`;
+    return `v${major}.${minor}.${patch}`;
 }
 
 export function versionNum(): number {

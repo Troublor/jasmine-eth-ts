@@ -1,6 +1,6 @@
 {
   "name": "jasmine-eth-ts",
-  "version": "1.0.17",
+  "version": "1.0.18",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "repository": "https://github.com/Troublor/jasmine-eth-ts.git",
@@ -11,12 +11,13 @@
     "build": "tsc && cp src/contracts/* dist/src/contracts",
     "build:docs": "typedoc --out docs --exclude node_modules --exclude tests --excludeNotExported --excludePrivate --excludeProtected --mode modules index.ts",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --fix",
-    "publish": "npm publish"
+    "prepare": "yarn lint && yarn build && yarn test && yarn build:docs"
   },
   "dependencies": {
     "bn.js": "^5.1.3",
     "ethereumjs-tx": "^2.1.2",
     "ganache-core": "^2.13.1",
+    "root-require": "^0.3.1",
     "ts-node": "^9.0.0",
     "typescript": "^4.0.3",
     "web3": "^1.3.0"
