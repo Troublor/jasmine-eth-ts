@@ -22,6 +22,8 @@ export default class SDK extends Web3Wrapper {
      * @param ethereumEndpoint url or web3.js provider
      */
     constructor(ethereumEndpoint: string | Web3Core.provider) {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         super(new Web3(ethereumEndpoint));
     }
 
