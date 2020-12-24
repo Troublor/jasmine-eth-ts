@@ -1,9 +1,7 @@
 "use strict";
-var __importDefault =
-    (this && this.__importDefault) ||
-    function (mod) {
-        return mod && mod.__esModule ? mod : { default: mod };
-    };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const Web3Wrapper_1 = __importDefault(require("./Web3Wrapper"));
 const fs_1 = __importDefault(require("fs"));
@@ -26,9 +24,7 @@ class Manager extends Web3Wrapper_1.default {
     constructor(web3, managerAddress) {
         super(web3);
         this.address = managerAddress;
-        this.abi = JSON.parse(
-            fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString(),
-        );
+        this.abi = JSON.parse(fs_1.default.readFileSync(path_1.default.join(__dirname, "contracts", "TFCManager.abi.json")).toString());
         this.contract = new web3.eth.Contract(this.abi, managerAddress);
     }
     /**
@@ -99,7 +95,8 @@ class Manager extends Web3Wrapper_1.default {
         try {
             await this.tfcAddress();
             return true;
-        } catch (e) {
+        }
+        catch (e) {
             return false;
         }
     }

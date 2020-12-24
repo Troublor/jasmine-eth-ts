@@ -26,7 +26,7 @@ export default abstract class Web3Wrapper {
         this._confirmationRequirement = value;
     }
 
-    protected async signContractTransaction(
+    public async signContractTransaction(
         transaction: PayableTransactionObject<any> | NonPayableTransactionObject<any> | ContractSendMethod,
         to: Address | undefined,
         options: { from: Web3Core.Account; value?: number | string | BN; gas?: number },
@@ -48,7 +48,7 @@ export default abstract class Web3Wrapper {
         return await (options.from as Web3Core.Account).signTransaction(rawTx);
     }
 
-    protected async signSimpleTransaction(
+    public async signSimpleTransaction(
         transaction: Web3Core.TransactionConfig,
         to: Address | undefined,
         options: { from: Web3Core.Account; value?: number | string | BN; gas?: number },
@@ -75,7 +75,7 @@ export default abstract class Web3Wrapper {
         return await options.from.signTransaction(transaction);
     }
 
-    protected async sendTransaction(
+    public async sendTransaction(
         transaction:
             | ContractSendMethod
             | PayableTransactionObject<any>
